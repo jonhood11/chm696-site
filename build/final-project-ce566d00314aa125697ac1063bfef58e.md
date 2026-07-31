@@ -1,0 +1,524 @@
+# Final Project Topics
+
+:::{admonition} Course-material provenance
+:class: dropdown
+This page was migrated from the CHM 696 course materials developed by Jonathan Hood and Lyudmila Slipchenko. Equations and examples remain under editorial review during the Fall 2026 website migration.
+:::
+
+## Deriving the Green's Function for the Time-Dependent Schrödinger Equation
+
+In this problem, you will derive the Green's function for the time-dependent Schrödinger equation for a free particle in one dimension.
+
+The time-dependent Schrödinger equation for a free particle is given by:
+```{math}
+i \hbar \frac{\partial \psi(x,t)}{\partial t} = - \frac{\hbar^2}{2m} \frac{\partial^2 \psi(x,t)}{\partial x^2}
+```
+ where $\psi(x,t)$ is the wavefunction.
+
+We are now going to define the Green's function for this problem. Note that this is a PDE now position and time. We are going to define the Green's function as the solution for a wavefunction localized at a position $x'$ at $t=0$, $\psi(x,t=0) = \delta(x-x')$. The Green's function is the resulting solutions. Therefore, the Green's function $G(x, x', t)$ solves the equation:
+```{math}
+i \hbar \frac{\partial G(x, x', t)}{\partial t} = - \frac{\hbar^2}{2m} \frac{\partial^2 G(x, x', t)}{\partial x^2}
+```
+ with the initial condition:
+```{math}
+G(x, x', 0) = \delta(x - x').
+```
+
+
+The equation for the wavefunction $\psi(x,t)$ in terms of the Green's function $G(x, x', t)$ and the initial wavefunction $\psi(x', 0)$ is given by the convolution of the Green's function with the initial condition. This is:
+
+
+```{math}
+\psi(x,t) = \int_{-\infty}^{\infty} G(x, x', t) \psi(x', 0) \, dx'
+```
+
+
+where: $\psi(x, t)$ is the wavefunction at position $x$ and time $t$, $G(x, x', t)$ is the Green's function, which represents the evolution of the wavefunction from $x'$ at time $0$ to $x$ at time $t$, and $\psi(x', 0)$ is the initial wavefunction at $t = 0$. The integral runs over all possible initial positions $x'$, accounting for the contribution of each part of the initial wavefunction to the final state.
+
+This equation represents the time evolution of an arbitrary initial state $\psi(x', 0)$ under the free particle Schrödinger equation, using the Green's function to propagate the state forward in time.
+
+### Step 1
+
+To solve this equation, start by taking the Fourier transform of the Green's function with respect to $x - x'$. Define the Fourier transform as:
+```{math}
+\tilde{G}(k,t) = \int_{-\infty}^{\infty} G(x, x', t) e^{-ik(x - x')} \, dx
+```
+ where $k$ is the wavenumber.
+
+### Step 2
+
+You should be left with a first order ODE in time. Solve this first order ODE. Hint: You should get
+```{math}
+\tilde{G}(k,t) = \exp\left(-i \frac{\hbar k^2}{2m} t\right)
+```
+
+
+###  Initial Condition in Fourier Space
+
+Now use the initial condition $G(x, x', 0) = \delta(x - x')$ to determine $\tilde{G}(k, 0)$. Hint: The Fourier transform of the delta function $\delta(x - x')$ is $1$. Therefore, $\tilde{G}(k, 0) = 1$.
+
+### Inverse Fourier Transform
+
+Now you have the solution of the Green's function in the Fourier domain. Now, take the inverse Fourier transform to return to position space:
+```{math}
+G(x, x', t) = \frac{1}{2\pi} \int_{-\infty}^{\infty} \tilde{G}(k,t) e^{ik(x - x')} \, dk
+```
+
+
+**Hint**: This is a Gaussian integral. You can use the standard result for integrals of the form:
+```{math}
+\int_{-\infty}^{\infty} \exp(-A k^2 + B k) \, dk = \sqrt{\frac{\pi}{A}} \exp\left(\frac{B^2}{4A}\right)
+```
+ with appropriate constants $A$ and $B$.
+
+### Solve the Integral
+
+The Green's function for the time-dependent Schrödinger equation is:
+```{math}
+G(x, x', t) = \sqrt{\frac{m}{2\pi i \hbar t}} \exp\left( i \frac{m (x - x')^2}{2 \hbar t} \right)
+```
+ This Green's function represents the probability amplitude for a particle to propagate from position $x'$ at time $t = 0$ to position $x$ at time $t$.
+
+### Propagate solutions
+
+Plot the solution $|\psi(x,t)|^2$ at various times for $\psi(x,t=0) = \delta(x)$. Hint it diverges for $t=0$ so start a little later. The goal is for you to understand what is going on. Plot whatever you want.
+
+## Michaelis--Menten Kinetics and Reaction--Diffusion Modeling
+
+### Objective {#objective .unnumbered}
+
+In this project you will derive, analyze, and numerically solve differential equations that arise when Michaelis--Menten reaction kinetics are coupled to transport processes. You will work with both first--order nonlinear ODEs and a second--order nonlinear boundary--value problem.
+
+### Physical Background {#physical-background .unnumbered}
+
+Consider the enzymatic reaction
+```{math}
+E + S \underset{k_{-1}}{\stackrel{k_1}{\rightleftharpoons}} ES \;\xrightarrow{k_{\mathrm{cat}}}\;
+E + P,
+```
+
+
+which under the quasi--steady--state approximation leads to the Michaelis--Menten rate law
+```{math}
+v(S) = \frac{V_{\max}\, S}{K_M + S},
+\qquad
+V_{\max} = k_{\mathrm{cat}} [E]_0,
+\qquad
+K_M = \frac{k_{-1} + k_{\mathrm{cat}}}{k_1}.
+```
+
+
+You will examine three scenarios:
+
+1.  A well--mixed batch reactor.
+
+2.  A plug--flow reactor with spatial variation.
+
+3.  A reaction--diffusion system in a one--dimensional medium.
+
+### Tasks {#tasks .unnumbered}
+
+#### 1. Batch Reactor (Well-Mixed System)
+
+Starting from the Michaelis--Menten rate law, derive an ODE for the time evolution of the substrate concentration $S(t)$ in a well-mixed batch reactor:
+```{math}
+\frac{dS}{dt} = - \frac{V_{\max}\, S}{K_M + S}.
+```
+
+
+*Hints:*
+
+- Write a mass balance using "Rate of accumulation = Rate of reaction".
+
+- The resulting equation is separable.
+
+- Express the solution implicitly (explicit solution in closed form is not required).
+
+##### 2. Plug-Flow Reactor (Steady State, No Diffusion)
+
+Consider steady flow with velocity $v$ through a tubular reactor of length $L$. Let $S(x)$ be the substrate concentration along the tube. Show that the governing ODE becomes
+```{math}
+v\,\frac{dS}{dx} = -\frac{V_{\max}\, S}{K_M + S}.
+```
+
+
+*Hints:*
+
+- Use a steady-state mass balance on a differential slice of the reactor.
+
+- The resulting ODE is first-order and nonlinear.
+
+- Specify an inlet boundary condition $S(0)=S_0$.
+
+##### 3. Reaction--Diffusion System (Steady State)
+
+Now assume the substrate diffuses in a one-dimensional medium (e.g., an enzyme-filled gel or catalyst pellet). Let $D$ be the diffusion coefficient. At steady state, derive the equation
+```{math}
+D \frac{d^2 S}{dx^2} = \frac{V_{\max}\, S}{K_M + S}.
+```
+
+
+This is a *nonlinear second-order boundary-value problem*.
+
+*Hints:*
+
+- Start from the steady-state diffusion--reaction equation
+```{math}
+D\,\frac{d^2 S}{dx^2} - R(S) = 0,
+      \qquad R(S) = \frac{V_{\max} S}{K_M + S}.
+```
+
+
+- Choose physically meaningful boundary conditions (e.g., fixed concentration at the surface, zero-flux at a symmetry plane).
+
+- Consider nondimensionalizing the equation to identify important parameters.
+
+##### 4. Numerical Solution
+
+Solve the reaction--diffusion boundary-value problem numerically.
+
+##### 5. Analysis and Discussion
+
+Discuss:
+
+- How the profile $S(x)$ depends on the ratio $V_{\max}/D$.
+
+- Behavior in the limits $S \ll K_M$ and $S \gg K_M$.
+
+- How the nonlinear MM kinetics differ qualitatively from first-order kinetics.
+
+## RC Circuit with Triangle Pulse Excitation
+
+Consider an RC circuit with a resistor $R$ and a capacitor $C$ in series. The voltage across the capacitor, $V_C(t)$, is governed by the following differential equation:
+
+
+```{math}
+V_{\text{in}}(t) = RC \frac{dV_C(t)}{dt} + V_C(t)
+```
+
+
+where $V_{\text{in}}(t)$ is the input voltage applied to the circuit, which in this case is a triangle pulse. The objective is to determine the response of the circuit, $V_C(t)$, to the triangle pulse input in two ways:
+
+1.  Using the **Laplace transform**.
+
+2.  Using the **Green's function** approach.
+
+### Step 1: Triangle Pulse Input {#step-1-triangle-pulse-input .unnumbered}
+
+The triangle pulse can be defined as:
+
+
+```{math}
+V_{\text{in}}(t) =
+\begin{cases}
+\frac{V_0}{T} t & \text{for } 0 \leq t \leq T, \\
+-\frac{V_0}{T} (t - 2T) & \text{for } T \leq t \leq 2T, \\
+0 & \text{for } t > 2T.
+\end{cases}
+```
+
+
+The Laplace transform of the triangle pulse is given by:
+
+
+```{math}
+\mathcal{L}\{V_{\text{in}}(t)\} = \frac{V_0}{T^2 p^2} (1 - e^{-pT})^2
+```
+
+
+### Step 2: Solve Using Laplace Transform {#step-2-solve-using-laplace-transform .unnumbered}
+
+First, solve the differential equation for $V_C(t)$ using the Laplace transform method:
+
+1.  Take the Laplace transform of the circuit equation:
+```{math}
+\mathcal{L}\{V_{\text{in}}(t)\} = RC \cdot p \cdot V_C(p) + V_C(p)
+```
+
+
+2.  Solve for $V_C(p)$ in terms of the Laplace transform of $V_{\text{in}}(t)$.
+
+3.  Perform the inverse Laplace transform to find $V_C(t)$ in the time domain.
+
+### Step 3: Solve Using Green's Function {#step-3-solve-using-greens-function .unnumbered}
+
+Next, solve the same problem using the Green's function approach. The Green's function for an RC circuit satisfies the equation:
+
+
+```{math}
+RC \frac{dG(t, t')}{dt} + G(t, t') = \delta(t - t')
+```
+
+
+1.  Solve for the Green's function $G(t, t')$ for the RC circuit.
+
+2.  Express $V_C(t)$ as the convolution of the input voltage $V_{\text{in}}(t)$ with the Green's function:
+```{math}
+V_C(t) = \int_0^t G(t, t') V_{\text{in}}(t') dt'
+```
+
+
+3.  Calculate the convolution and compare the result to the solution obtained using the Laplace transform.
+
+### Hints {#hints .unnumbered}
+
+\- For the Laplace transform approach, remember to take the inverse Laplace of the entire solution. - For the Green's function approach, ensure the convolution is calculated correctly and matches the input time intervals.
+
+## Quantum Particle in a Variable-Potential Well
+
+### Motivation {#motivation .unnumbered}
+
+The time-independent Schrödinger equation for a particle of mass $m$ in a one-dimensional potential $V(x)$ is
+```{math}
+-\frac{\hbar^2}{2m}\, y''(x) + V(x) y(x) = E\, y(x).
+```
+ This can be written in Sturm--Liouville (SL) form and analyzed using spectral theory. This project explores how modifying the potential affects bound-state eigenvalues and eigenfunctions.
+
+### Tasks {#tasks-1 .unnumbered}
+
+1.  Rewrite the Schrödinger equation in Sturm--Liouville form
+```{math}
+-(p(x) y')' + q(x) y = \lambda w(x) y,
+```
+ and identify $p(x)$, $q(x)$, $w(x)$, and $\lambda$.
+
+2.  Choose a potential well, for example:
+```{math}
+V(x) =
+        \begin{cases}
+            0, & |x| < 1,\\
+            V_0, & |x| \ge 1,
+        \end{cases}
+        \quad
+        \text{or}\quad
+        V(x) = x^4 - 2x^2.
+```
+ Describe qualitatively the expected number of bound states.
+
+3.  Solve the eigenvalue problem numerically (shooting method or finite differences) to approximate the first several eigenvalues $E_n$.
+
+4.  Plot the corresponding eigenfunctions $y_n(x)$.
+
+5.  Verify orthogonality of eigenfunctions under the appropriate weight
+```{math}
+\int_{a}^{b} w(x)\, y_n(x) y_m(x)\, dx = 0, \qquad n \ne m.
+```
+
+
+6.  Discuss how the shape of $V(x)$ influences the spacing of eigenvalues.
+
+### Hints {#hints-1 .unnumbered}
+
+- In SL form, $w(x)=1$ for the Schrödinger equation.
+
+- For numerical work, impose $y(a)=0$ and $y(b)=0$ for sufficiently large $\pm a$.
+
+- The shooting method converts the problem into root-finding for the eigenvalue $E$.
+
+- Use symmetry: for even potentials, eigenfunctions are even or odd.
+
+## Boundary Conditions and Their Effect on Eigenvalues
+
+### Motivation {#motivation-1 .unnumbered}
+
+The classical eigenvalue problem
+```{math}
+y''(x) + \lambda y(x) = 0,\qquad x\in(0,L),
+```
+ arises in vibration, heat conduction, and quantum mechanics. Different boundary conditions produce different eigenvalue spectra, even though the differential equation is the same.
+
+### Tasks {#tasks-2 .unnumbered}
+
+1.  Solve the problem under the following boundary conditions:
+
+    - Dirichlet--Dirichlet: $y(0)=0$, $y(L)=0$.
+
+    - Neumann--Neumann: $y'(0)=0$, $y'(L)=0$.
+
+    - Mixed: $y(0)=0$, $y'(L)=0$.
+
+    - Robin: $y'(0)+hy(0)=0$, $y'(L)+hy(L)=0$.
+
+    For each case, derive the eigenvalue equation determining $\lambda$.
+
+2.  Determine how the eigenvalues depend on the type of boundary condition.
+
+3.  Plot the first three eigenfunctions for each case.
+
+4.  Discuss how the choice of boundary condition changes:
+
+    - the fundamental frequency,
+
+    - spacing between eigenvalues,
+
+    - orthogonality relations,
+
+    - completeness of eigenfunctions.
+
+### Hints {#hints-2 .unnumbered}
+
+- For Robin conditions, the eigenvalue equation involves tangent or cotangent functions.
+
+- The Neumann problem has $\lambda_0 = 0$; interpret the physical meaning of the constant solution.
+
+- Use normalized eigenfunctions for clean comparisons.
+
+- Symmetry of boundary conditions often gives symmetric eigenfunctions.
+
+## Comparing Numerical Methods for Sturm--Liouville Eigenvalue Problems
+
+### Motivation {#motivation-2 .unnumbered}
+
+Many SL problems cannot be solved analytically. This project compares numerical methods for computing eigenvalues of
+```{math}
+-(p(x) y')' + q(x) y = \lambda w(x) y, \qquad x\in(a,b).
+```
+
+
+### Tasks {#tasks-3 .unnumbered}
+
+1.  Select a nontrivial SL operator, e.g.
+```{math}
+p(x)=1+x,\quad q(x)=\sin x,\quad w(x)=1.
+```
+
+
+2.  Implement the following three numerical approaches:
+
+    1.  Shooting method with root-finding.
+
+    2.  Finite-difference discretization leading to a matrix eigenvalue problem.
+
+    3.  Rayleigh--Ritz or Galerkin method using trial basis functions.
+
+3.  Compute the first $3$--$5$ eigenvalues for your chosen operator.
+
+4.  Compare:
+
+    - accuracy,
+
+    - computational cost,
+
+    - stability,
+
+    - implementation difficulty.
+
+5.  Plot the eigenfunctions for each method and compare visually.
+
+6.  Discuss which method is most suitable for general SL problems.
+
+### Hints {#hints-3 .unnumbered}
+
+- To avoid instability in the shooting method, start integration from a regular endpoint.
+
+- The finite-difference method leads to a tridiagonal matrix that can be diagonalized efficiently.
+
+- In Galerkin, use orthogonal basis functions (e.g. sines or Legendre polynomials) to improve convergence.
+
+- Check eigenvalue convergence by refining your discretization.
+
+## Aliasing and Sampling Theorem Investigation
+
+### Motivation {#motivation-3 .unnumbered}
+
+The Nyquist-Shannon sampling theorem states that a continuous signal can be perfectly reconstructed from discrete samples if the sampling rate is at least twice the highest frequency component. Sampling below this rate causes aliasing, a phenomenon where high frequencies are misrepresented in the sampled signal.
+
+### Tasks {#tasks-4 .unnumbered}
+
+1.  Generate or select a continuous-time signal with multiple frequency components.
+
+2.  Sample the signal at different rates:
+
+    - Above the Nyquist rate
+
+    - At the Nyquist rate
+
+    - Below the Nyquist rate
+
+3.  Compute the discrete Fourier transform (DFT) of each sampled signal.
+
+4.  Plot the reconstructed signals using sinc interpolation.
+
+5.  Analyze and visualize the aliasing effect.
+
+6.  Explore the use of anti-aliasing filters before sampling.
+
+### Hints {#hints-4 .unnumbered}
+
+- Use a combination of sine and cosine functions to create test signals.
+
+- For plotting frequency content, use FFT in Python/Matlab and compute magnitude spectrum.
+
+- Compare spectra at different sampling rates to identify aliasing.
+
+- Observe how undersampling folds high-frequency components into the lower-frequency spectrum.
+
+## Continuous Wavelet Transform (CWT) Time--Frequency Analysis
+
+### Motivation {#motivation-4 .unnumbered}
+
+The CWT provides a time-frequency representation of signals, allowing the analysis of signals whose frequency content changes over time (non-stationary signals). It is superior to standard Fourier analysis in revealing localized spectral features.
+
+### Tasks {#tasks-5 .unnumbered}
+
+1.  Select or generate a non-stationary signal (e.g., chirp, amplitude-modulated wave, or speech).
+
+2.  Implement the continuous wavelet transform using a chosen mother wavelet (e.g., Morlet or Mexican Hat).
+
+3.  Compute and plot the scalogram (magnitude of CWT coefficients as a function of time and scale).
+
+4.  Compare with short-time Fourier transform (STFT) analysis of the same signal.
+
+5.  Identify features in the signal that are better resolved with wavelets than with STFT.
+
+6.  Investigate how the choice of mother wavelet affects time-frequency resolution.
+
+### Hints {#hints-5 .unnumbered}
+
+- Normalize time and scale axes appropriately to interpret frequency content.
+
+- Use available libraries such as PyWavelets in Python or MATLAB Wavelet Toolbox.
+
+- Consider converting wavelet scales to pseudo-frequencies for easier interpretation.
+
+- Compare time localization of features between CWT and STFT to illustrate the advantage of wavelets.
+
+## Construction and Properties of Haar or Daubechies Wavelets
+
+### Motivation {#motivation-5 .unnumbered}
+
+Wavelets provide a multi-resolution decomposition of signals, useful for compression, denoising, and analysis. Haar wavelets are the simplest orthogonal wavelets, while Daubechies wavelets offer compact support and vanishing moments.
+
+### Tasks {#tasks-6 .unnumbered}
+
+1.  Construct the Haar wavelet scaling function and mother wavelet analytically.
+
+2.  Demonstrate the orthogonality of Haar wavelet basis functions.
+
+3.  Implement a discrete Haar wavelet transform (DWT) for a sample signal or image.
+
+4.  Reconstruct the original signal from the Haar coefficients and compare with the original.
+
+5.  Explore Daubechies wavelets (e.g., D4 or D6):
+
+    - Generate scaling and wavelet filter coefficients.
+
+    - Verify orthogonality numerically.
+
+    - Analyze the vanishing moments.
+
+6.  Apply multi-resolution analysis (MRA) to decompose a signal into coarse and detail components.
+
+### Hints {#hints-6 .unnumbered}
+
+- Haar wavelet functions are piecewise constant; Daubechies wavelets are compactly supported but not piecewise constant.
+
+- Use recursive filter-bank algorithm to implement DWT efficiently.
+
+- Check that the reconstruction error is close to zero to verify correctness.
+
+- Plot the approximation and detail coefficients at each decomposition level to understand MRA.
+
+---
+
+*Migration source: `Homeworks/project2.tex` from the archived Overleaf export.*

@@ -1,0 +1,387 @@
+# Machine Learning: Clustering and Classification
+
+:::{admonition} Course-material provenance
+:class: dropdown
+This page was migrated from the CHM 696 course materials developed by Jonathan Hood and Lyudmila Slipchenko. Equations and examples remain under editorial review during the Fall 2026 website migration.
+:::
+
+## Feature selection and data mining
+
+
+- The goal of data mining and machine learning is to construct and exploit the intrinsic low-rank feature space of a given data set.
+
+- Sometimes the feature space can be found in an unsupervised fashion by an algorithm like PCA.
+
+- Sometimes the feature space can be explicitly constructed by expert knowledge and/or correlations among the data.
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `iris_dataset.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+Fisher iris data set: simple biological features are sufficient to show that the data has distinct, quantifiable differences between the species.
+
+
+## Distinguishing images of cats and dogs
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `cat_dog.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+- Provided: 80 images of dogs and 80 images of cats.
+
+- Our goal is to construct a [feature space]{style="color: blue"} where automated classification of these images can be efficiently computed.
+
+- We will attempt to use the SVD to extract the dominant correlations among the images.
+
+
+## Cats vs dogs: SVD decomposition
+
+
+    # extract dog and cat images
+    dogdata_mat = io.loadmat(os.path.join('..','DATA','dogData.mat'))
+    catdata_mat = io.loadmat(os.path.join('..','DATA','catData.mat'))
+    dog = dogdata_mat['dog']
+    cat = catdata_mat['cat']
+
+    # combine all images into one array
+    CD = np.concatenate((dog,cat),axis=1)
+
+    # Center data and compute SVD decomposition
+    u,s,vT = np.linalg.svd(CD-np.mean(CD),full_matrices=0)
+
+
+## Cats vs dogs: principal components
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `dog_vs_cat_svd.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+First four features generated from the SVD of the 160 images of dogs and cats.
+
+
+## Cats vs dogs: projection on principal components
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `dogs_vs_cats_vectors.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+Second and third components provide initial differentiation between cats and dogs.
+
+
+## Wavelets: a smarter way to represent images
+
+
+- Wavelets are an extension of Fourier analysis (stay tuned!)
+
+- Wavelets provide a powerful tool for encoding and compressing images.
+
+- SVD decomposition of the (same) images in a wavelet representation has sharper features.
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `dogs_vs_cats_wavelet.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+## Cats vs dogs: feature space
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `dogs_cats_histogram.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+Histogram of the distribution of loadings for dogs (blue) and cats (red) on the first four dominant SVD modes.
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `dogs_vs_cats_feature_space.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+Projection of dogs (green) and cats (magenta) into feature space.
+
+
+## Supervised versus unsupervised learning
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `supervised_vs_unsupervised.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+[Supervised]{style="color: blue"} learning: the training data is labeled by a teacher/expert/supervisor. The model is used for prediction and classification of new data.\
+[Unsupervised]{style="color: blue"} learning: no training labels are given. The goal itself may be to discover patterns in the data so that feature engineering or feature extraction can be used to build an appropriate model.
+
+
+## Mathematical formalism
+
+Domain (all possible data) 
+```{math}
+D \subset \mathbb{R}^n
+```
+ Data collected in domain 
+```{math}
+D' \subset D
+```
+ The goal of classification is to build a classifier labeling all data in $D$ given data from $D'$.
+
+
+## Unsupervised learning
+
+Input 
+```{math}
+\text{data } \; \{ \mathbf{x}_j \in \mathbb{R}^n, \; j\in Z:= \{1,2,\dots. ,m\} \}
+```
+ Output 
+```{math}
+\text{labels } \; \{ \mathbf{y}_j \in \{\pm 1 \}, \; j\in Z\}
+```
+
+
+The goal of unsupervised learning is to produce labels $\mathbf{y}_j$ for all the data.
+
+
+## Supervised learning
+
+Input 
+```{math}
+\text{data } \; \{ \mathbf{x}_j \in \mathbb{R}^n, \; j\in Z:= \{1,2,\dots. ,m\} \}
+```
+ 
+```{math}
+\text{labels } \; \{ \mathbf{y}_j \in \{\pm 1 \}, \; j\in Z' \subset Z\}
+```
+
+
+Output 
+```{math}
+\text{labels } \; \{ \mathbf{y}_j \in \{\pm 1 \}, \; j\in Z\}
+```
+
+
+The goal of supervised learning is to produce labels $\mathbf{y}_j$ for all the data, given labels for the subset of data.
+
+
+## Iris example
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `iris_dataset.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+- Data: $\mathbf{x}_j$ = sepal length, sepal width, petal length, petal width.
+
+- Labels: $\mathbf{y}_j$ = setosa, versicolor, virginica.
+
+- Data space: $D' \in$ 150 iris samples: 50 setosa, 50 versicolor, and 50 virginica.
+
+- Real world: $D \in$ the universe of setosa, versicolor and virginica irises.
+
+
+## Cats vs dogs example
+
+
+- Data: $\mathbf{x}_j$ = 64×64 image= 4096 pixels.
+
+- Labels: $\mathbf{y}_j$ = dog, cat = 1, -1.
+
+- Data space: $D' \in$ 160 image samples: 80 dogs and 80 cats.
+
+- Real world: $D \in$ the universe of dogs and cats.
+
+
+## Difficult cases for classification and regression
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `difficult_classification.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+## Unsupervised learning: k-means clustering
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `k-means.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+1.  Given initial values for k distinct means, compute the distance of each observation $\mathbf{x}_j$ to each of the k means.
+
+2.  Label each observation as belonging to the nearest mean.
+
+3.  Once labeling is completed, find the center-of-mass (mean) for each group of labeled points. These new means are used to start back at step 1 in the algorithm.
+
+
+## Unsupervised learning: k-means clustering (continued)
+
+This process is described by the following minimization process: 
+```{math}
+\text{argmin}_{\mu_j} \sum_{j=1}^{k} \sum_{\mathbf{x}_j \in D_j'} ||\mathbf{x}_j - \mu_j||^2,
+```
+ where $\mu_j$ is the mean of the *j*th cluster, $D_j'$ is the subdomain of data associated with that cluster.
+
+
+## Unsupervised learning: k-means clustering (continued)
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `k-means2.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+**Pros:**
+
+- no supervision is required
+
+- fast heuristic algorithm
+
+**Cons:**
+
+- not very accurate
+
+- results depend on the chosen number of clusters and might depend on the initial guess
+
+
+## Unsupervised hierarchical clustering
+
+
+- [Agglomerative]{style="color: blue"}: bottom-up approach. Each data point $\mathbf{x}_j$ is its own cluster initially. The data is merged in pairs as one creates a hierarchy of clusters.
+
+- [Divisive]{style="color: blue"}: top-down approach. All the observations $\mathbf{x}_j$ are initially part of a single giant cluster. The data is then recursively split into smaller and smaller clusters.
+
+The results of hierarchical clustering might dramatically depend on distance metrics:
+
+- Euclidean distance $|| \mathbf{x}_j - \mathbf{x}_k||_2$
+
+- Squared euclidean distance $|| \mathbf{x}_j - \mathbf{x}_k||_2^2$
+
+- Manhattan distance $|| \mathbf{x}_j - \mathbf{x}_k||_1$
+
+- Maximum distance $|| \mathbf{x}_j - \mathbf{x}_k||_\infty$
+
+- Mahalanobis distance $\sqrt{(\mathbf{x}_j - \mathbf{x}_k)^T C^{-1} (\mathbf{x}_j - \mathbf{x}_k) }$
+
+
+## Dendrogram
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `dendrogram.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+Illustration of the agglomerative hierarchical clustering.\
+**Note**: the lengths of the branches of the dendrogram tree are directly related to the distance between the merged points.
+
+
+## Unsupervised learning: Finite mixture models
+
+The fundamental assumption of the mixture model is that the probability density function (PDF) for observations of data $\mathbf{x}_j$ is a weighted linear sum of a set of unknown distributions: 
+```{math}
+f(\mathbf{x}_j, \Theta) = \sum_{p=1}^k \alpha_p f_p(\mathbf{x}_j, \Theta_p)
+```
+ $f$ is the measured PDF,\
+$f_p$ is the PDF of the mixture *j*,\
+$k$ is the total number of mixtures.\
+PDFs $f_j$ are weighted by $\alpha_p$ ($\alpha_1 + \alpha_2 + \dots + \alpha_k =1$) and parametrized by an unknown vector of parameters $\Theta_p$.
+
+**Objective**: Given the observed PDF $f(\mathbf{x}_j, \Theta)$, estimate the mixture weights $\alpha_p$ and the parameters of the distribution $\Theta_p$.\
+**User input**: the number of mixtures $k$ and the individual statistical properties of each mixture.
+
+
+## Gaussian mixture models (GMM)
+
+Gaussian mixture model (GMM) assumption: each mixture model $\Theta_p$ has a Gaussian distribution, i.e., it can be completely characterized by the mean $\mu_p$ and the variance $\sigma_p$.
+
+
+```{math}
+f(\mathbf{x}_j, \Theta) = \sum_{p=1}^k \alpha_p N_p (\mathbf{x}_j, \mu_p, \sigma_p)
+```
+
+
+## Maximum likelihood estimate (MLE)
+
+An estimate of the parameter vector $\Theta$ can be computed using the *maximum likelihood estimate* (MLE): 
+```{math}
+\frac{\partial L(\Theta)}{\partial \Theta}  = 0
+```
+ Log-likelihood function $L$: 
+```{math}
+L(\Theta) = \sum_{j=1}^n  \log f(\mathbf{x}_j |\Theta)
+```
+
+
+## Expectation maximization (EM) algorithm
+
+
+- Start by assuming an initial estimate (guess) of the parameter vector $\Theta$: 
+```{math}
+\tau_p^{(k)} (\mathbf{x}_j) = \frac{\alpha_p^{(k)} N_p (\mathbf{x}_j, \mu_p^{(k)}, \sigma_p^{(k)})}{N(\mathbf{x}_j, \Theta^{(k)})}
+```
+
+
+- Update the parameters and mixture weights: 
+```{math}
+\alpha_p^{(k+1)} =1/n \sum_{j=1}^n \tau_p^{(k)}(\mathbf{x}_j)
+```
+ 
+```{math}
+\mu_p^{(k+1)} = \frac{\sum_{j=1}^n \mathbf{x}_j \tau_p^{(k)}(\mathbf{x}_j)}{ \sum_{j=1}^n \tau_p^{(k)}(\mathbf{x}_j) }
+```
+ Covariance matrix with variance parameters: 
+```{math}
+\sum _p^{(k+1)} = \frac{\sum_{j=1}^n \tau_p^{(k)}(\mathbf{x}_j) \biggl(\mathbf{x}_j - \mu_p^{(k+1)} \biggr)\biggl(\mathbf{x}_j - \mu_p^{(k+1)} \biggr)^T }{ \sum_{j=1}^n \tau_p^{(k)}(\mathbf{x}_j) }
+```
+
+
+## GMM application to the cat vs dog dataset
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `GMM_cat_dog.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+GMM fit of the second and fourth principal components of the dog and cat wavelet image data.
+
+
+## Supervised learning: Linear discriminants
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `cat_dog_again.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+Linear discriminant analysis (LDA) produces an optimal dimensionality reduction to a decision line for classification.
+
+
+## Linear discriminant analysis
+
+**The goal of LDA**: find a suitable projection that maximizes the distance between the inter-class data while minimizing the distance between intra-class data.
+
+Between-class variance: 
+```{math}
+S_B = (\mu_2 - \mu_1)(\mu_2 - \mu_1)^T
+```
+ Within-class variance: 
+```{math}
+S_W = \sum_{j=1}^2 \sum_{\mathbf{x}} (\mathbf{x} - \mu_j)(\mathbf{x} - \mu_j)^T
+```
+
+
+Objective: find a projection: 
+```{math}
+\mathbf{w} = \text{arg max}_\mathbf{w}  \frac{\mathbf{w}^T S_B \mathbf{w} }{\mathbf{w} ^T S_W \mathbf{w} }
+```
+ This is the generalized Rayleigh quotient that can be solved via the generalized eigenvalue problem $S_B \mathbf{w} = \lambda S_W \mathbf{w}$
+
+
+## Linear discriminant analysis: cats vs dogs
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `LDA_cat_dog.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+Classification line for (a) linear discriminant (LDA) and (b) quadratic discriminant (QDA) for dog (green dots) versus cat (magenta dots) data projected onto the second and fourth principal components.
+
+---
+
+*Migration source: `04_Machine_Learning/Clustering.tex` from the archived Overleaf export.*

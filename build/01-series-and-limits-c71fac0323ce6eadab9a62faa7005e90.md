@@ -1,0 +1,349 @@
+# Series and Limits
+
+:::{admonition} Course-material provenance
+:class: dropdown
+This page was migrated from the CHM 696 course materials developed by Jonathan Hood and Lyudmila Slipchenko. Equations and examples remain under editorial review during the Fall 2026 website migration.
+:::
+
+## Why series?
+
+
+Use of series in mathematics and sciences
+
+- Representation of functions - power series, Fourier series, Taylor series
+
+- Solving differential equations
+
+- Solving integrals
+
+- Numerical calculations - basis sets
+
+What do we need to know about series?
+
+- Does the series' sum approach a finite, specific number (series **converges**), or does it grow indefinitely (series **diverges**)?
+
+- For a series with both positive and negative terms, is it an absolute or conditional convergence?
+
+- For power series, we want to know the interval and radius of convergence
+
+
+## What is a Series?
+
+An infinite series is the sum of infinitely many terms: 
+$$
+S = a_1 + a_2 + a_3 + \cdots = \sum_{n=1}^\infty a_n.
+$$
+ We define $S$ as the **limit** of partial sums: 
+$$
+S_N=\sum_{n=1}^N a_n, \quad S=\lim_{N\to\infty} S_N
+$$
+
+
+:::{note}
+Key Question Do the partial sums approach a finite value? If yes, the series converges.
+:::
+
+
+## Geometric series
+
+
+$S_N =a+ar+ar^2 + \cdots + ar^{N-1} = \sum_{n=0}^{N-1} ar^n$\
+where $r$ is the ratio of successive terms, or *common* ratio.\
+
+$S_N =a+ar+ar^2 +ar^3 + \cdots +ar^{( N - 1 )}$\
+$rS_N =ar+ar^2 +ar^3 +ar^4 + \cdots +ar^N$\
+Subtract the second equation from the first and solve for $S_N$:\
+$S_N = \frac{a(1-r^N)}{1-r}$\
+
+For an infinite series with $|r|<1$, $\lim_{N\to\infty} r^N = 0$, and $S = \frac{a}{1-r}$.\
+However, for $|r| \ge 1$, the series either diverges or oscillates.
+
+
+## Convergence of series
+
+
+:::{note}
+example Is the series convergent? $S = 1 + 2 + 4 + 8 + 16 + \cdots$
+:::
+
+:::{note}
+example Is the series convergent? $S = 1 + 1/2 + 1/3 + 1/4 + 1/5 + \cdots$
+:::
+
+:::{note}
+example Is the series convergent? $S = 1 - 1/2 + 1/3 - 1/4 + 1/5 + \cdots$
+:::
+
+
+## Convergence of series (continued)
+
+
+:::{note}
+Remark It is often difficult or impossible to compute $S$, but we still want to find out whether the series is convergent or divergent. There is a sequence of tests that help determine that.
+:::
+
+**Preliminary test.** If the terms of an infinite series do not tend to zero (that is, if $\lim_{n\to\infty} a_n \neq 0$), the series diverges. If $\lim_{n\to\infty} a_n = 0$, we must test further.
+
+:::{note}
+example Is the series convergent? $S = 1 + 1/2 + 1/3 + 1/4 + 1/5 + \cdots$
+:::
+
+:::{note}
+example Is the series convergent? $S = 1/2 + 2/3 + 3/4 + 4/5 + \cdots$
+:::
+
+
+## Convergence of series. Comparison Test
+
+
+The comparison test has two parts.
+
+- If $0<a_n<m_n$ and $\sum m_n$ converges, then $\sum a_n$ converges.
+
+- If $a_n>d_n$ and $\sum d_n$ diverges, then $\sum a_n$ diverges.
+
+:::{warning}
+Warning Note that neither $|a_n| \geq m_n$ nor $|a_n| \leq d_n$ tells us anything about convergence.
+:::
+
+:::{admonition} Example
+Is the series convergent? $\sum_{n=1}^{\infty} \frac{1}{n!} = 1 + 1/2 + 1/6 + 1/24 + \cdots$
+:::
+
+
+## Convergence of series. Integral Test
+
+
+Integral test is valid for series with positive numbers.\
+
+If $0 < a_{n+1} \leq a_n$ for $n>N$, then $\sum^{\infty} a_n$ converges if $\int^{\infty} a_n dn$ is finite, and diverges if the integral is infinite.
+
+
+:::{note} Original-slide figure pending review
+The original lecture refers to `series1.png`. The file is preserved in the private Overleaf archive and will be redrawn or published after its reuse rights are verified.
+:::
+
+
+:::{note}
+Example Test the convergence of the harmonic series: $\sum_{n=1}^{\infty} \frac{1}{n} = 1 + 1/2 + 1/3 + 1/4 + \cdots$
+:::
+
+
+## Convergence of series. Ratio Test
+
+
+Let's call the ratio of the two consecutive terms as $\rho_n = \left|\frac{a_{n+1}}{a_n}\right|$, and its limit as $\rho = \lim_{n\to\infty}\left|\frac{a_{n+1}}{a_n}\right|$. Then,
+
+- $\rho<1$: series converges.
+
+- $\rho >1$: series diverges.
+
+- $\rho =1$: inconclusive (some series converge and others diverge)
+
+:::{note}
+Example Test convergence of $\sum \frac{x^n}{n!}$.
+:::
+
+
+## Convergence of series. Special Comparison Test
+
+
+- Convergence test:
+
+- Divergence test:
+
+
+## Alternating Series
+
+
+An alternating series is a series whose terms are alternately plus and minus.
+
+:::{note}
+Key questions
+
+- Does the series converge?
+
+- Does the series converge **absolutely**, i.e. $\sum_{n=1}^{\infty} |a_n|$ converges?
+:::
+
+Test of convergence:
+
+- If $\lim_{n\to\infty} a_n = 0$ and $|a_{n+1}| \leq |a_n|$, then $\sum (-1)^{n-1}a_n$ converges.
+
+:::{note}
+Example
+
+$1-1/2+1/3-1/4+\cdots$ converges to $\ln 2$, but it does not converge absolutely.
+:::
+
+A series that converges but does not converge absolutely is called **conditionally** convergent.
+
+:::{note}
+Example Consider the Coulomb interaction of ions in a crystal lattice.
+:::
+
+
+## Transformation of series
+
+
+- The convergence or divergence of a series is not affected by multiplying every term of the series by the same nonzero constant. Neither is it affected by changing a finite number of terms (for example, omitting the first few terms).
+
+- Two convergent series $\sum_{n=1}^{\infty} a_n$ and $\sum_{n=1}^{\infty} b_n$ may be added (or subtracted) term by term. (Adding "term by term" means that the nth term of the sum is $a_n + b_n$.) The resulting series is convergent, and its sum is obtained by adding (subtracting) the sums of the two given series.
+
+- The terms of an *absolutely* convergent series may be rearranged in any order without affecting either the convergence or the sum. This is not true of conditionally convergent series!
+
+
+## Power Series
+
+
+## Power series
+
+A power series about $x=0$: 
+$$
+\sum_{n=0}^\infty a_n x^n = a_0  + a_1x + a_2x^2 + a_3 x^3 + \cdots
+$$
+ A power series about $x=a$: 
+$$
+\sum_{n=0}^\infty a_n (x-a)^n = a_0  + a_1(x-a) + a_2(x-a)^2 + a_3 (x-a)^3 + \cdots
+$$
+
+
+For each such series, there is a **radius of convergence** $R$ such that the series converges for $|x|<R$.
+
+
+## Power series: Radius of Convergence
+
+
+To determine the radius of convergence, use the **ratio test**:
+
+:::{note}
+Example $\sum_{n=0}^\infty \frac{(-x)^n}{2^n} = 1- x/2 +x^2 /4 - x^3/8 + \cdots$
+
+- Ratio test: $\rho_n = \left| a_{n+1}/a_n \right|= \left| \frac{(-x)^{n+1}}{2^{n+1}}  \div \frac{(-x)^n}{2^n}  \right| = \left| \frac{x}{2} \right|$
+
+- $\rho = \left| \frac{x}{2} \right|$
+
+- The series converges for $\rho < 1$, i.e., for $|x|< 2$, and diverges for $|x| > 2$
+
+- Check convergence at endpoints:
+
+  - $x = +2$ $\rightarrow$ $1 - 1 + 1 - 1 + 1 + \cdots$ $\rightarrow$ diverges
+
+  - $x = -2$ $\rightarrow$ $1 + 1 + 1 + 1 + 1 + \cdots$ $\rightarrow$ diverges
+
+- The interval of convergence is $|x|< 2$
+:::
+
+
+## Power series: Theorems
+
+
+- A power series may be differentiated or integrated term by term; the resulting series converges to the derivative or integral of the function represented by the original series within the same interval of convergence as the original series.
+
+- Two power series may be added, subtracted, or multiplied; the resultant series converges at least in the common interval of convergence.
+
+- One series may be substituted in another provided that the values of the substituted series are in the interval of convergence of the other series.
+
+- The power series of a function is unique, that is, there is just one power series of the form $\sum_{n=0}^{\infty} a_n x^n$ which converges to a given function.
+
+
+## Expanding function in Power series
+
+
+:::{note}
+Example Let's find a series for $\sin{x}$. Assuming that such a series exists, we write:
+
+$\sin{x} = a_0 + a_1x + a_2 x^2 + a_3 x^3 + \cdots + a_n x^n + \cdots$
+:::
+
+
+## Taylor Series
+
+We just obtained a **Maclaurin series** or **Taylor series about the origin** of $\sin{x}$
+
+- Taylor series for f(x) about x=a: 
+$$
+f(x)= f(a) + (x-a)f'(a) + \frac{1}{2!}(x-a)^2f''(a) + \cdots +  \frac{1}{n!}(x-a)^nf^{(n)}(a) + \cdots = \sum_{n=0}^\infty \frac{f^{(n)}(a)}{n!}(x-a)^n
+$$
+
+
+- Maclaurin series is the Taylor series about the origin (i.e., a = 0): 
+$$
+f(x)= f(0) + xf'(0) + \frac{1}{2!}x^2f''(0) + \cdots +  \frac{1}{n!}x^nf^{(n)}(0) + \cdots = \sum_{n=0}^\infty \frac{f^{(n)}(0)}{n!}x^n
+$$
+
+
+## Maclaurin series to remember
+
+
+- $e^{x} = \sum_{n=0}^{\infty} \frac{x^n}{n!} = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots$
+
+- $\sin x = \sum_{n=0}^{\infty} (-1)^n \frac{x^{2n+1}}{(2n+1)!} = x -\frac{x^3}{3!} +\frac{x^5}{5!} + \cdots$
+
+- $\cos x = \sum_{n=0}^{\infty} (-1)^n \frac{x^{2n}}{(2n)!} = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} + \cdots$
+
+- $\ln(1+x) = \sum_{n=1}^{\infty} (-1)^{n+1} \frac{x^n}{n}
+  = x - \frac{x^2}{2} + \frac{x^3}{3} - \frac{x^4}{4} + \cdots,
+  \quad |x|<1$
+
+- $(1+x)^p = \sum_{n=0}^{\infty} \binom{p}{n} x^n
+  = 1 + p x + \frac{p(p-1)}{2!}x^2 + \frac{p(p-1)(p-2)}{3!}x^3 + \cdots,
+  \quad |x|<1$
+
+
+## How to obtain power series expansions?
+
+
+How to obtain power series expansion for a given function? Let's look at a few examples.
+
+- $e^x \cos(x)$
+
+- $\tan{x}$
+
+- $\frac{1}{1-x}$
+
+- $\ln(x)$
+
+
+## Accuracy of series approximations
+
+
+:::{note}
+Key questions
+
+- Does the Taylor or Maclaurin series actually converge to the function being expanded?
+
+- If it does, how rapidly does it converge? i.e., how many terms are required?
+:::
+
+- The **remainder** $R_n(x)$ in a Taylor series is the difference between the value of the function and the sum of n + 1 terms of the series:
+
+  $R_n(x) = f(x) \, - \, \left[ f(a) + (x - a)f'(a) + 1/2! (x - a)^2f''(a) + \cdots + 1/n!(x-a)^nf^{(n)}(a) \right]$
+
+- The series converges to a function $\leftrightarrow$ $\lim_{n\to\infty} |R_n(x)|=0$
+
+- One possible formula to check whether the series converges to the function:
+
+  $R_n(x) = \frac{(x-a)^{n+1}f^{(n+1)}(c)}{(n+1)!}$, where $c$ is a point between $a$ and $x$.
+
+
+## Error in Series Approximations
+
+
+- Condition for alternating series: if $S = \sum_{n=0}^{\infty} a_n$ is an alternating series with $|a_{n+1}| < |a_n|$, and $\lim_{n\to\infty} a_n = 0$, then $|S \ -(a_1+a_2+\cdots+a_n)| \leq |a_{n+1}|$
+
+- Condition for non-alternating series: if $S = \sum_{n=1}^{\infty} a_n x^n$ converges for $|x|<1$, and if $|a_{n+1}| < |a_n|$ for $n>N$, then $\left| S \ - \sum_{n=0}^{N} a_n x^n \right| < |a_{N+1}x^{N+1}| \div (1-|x|)$
+
+
+## Uses of series in numerical computations
+
+
+- Numerical computation, differentiation, integration, \...
+
+- Evaluation of limits, e.g., $\lim_{x\to 0} \frac{\sin(x)}{x}$
+
+  This is the origin to the **L'Hôpital's rule**: $\lim_{x\to a} \frac{f(x)}{\phi(x)} =  \lim_{x\to a} \frac{f'(x)}{\phi'(x)}$
+
+---
+
+*Migration source: `01_Series/series.tex` from the archived Overleaf export.*
