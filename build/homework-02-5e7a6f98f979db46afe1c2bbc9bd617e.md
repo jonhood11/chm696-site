@@ -1,0 +1,86 @@
+# Homework 2
+
+:::{admonition} Course-material provenance
+:class: dropdown
+This page was migrated from the CHM 696 course materials developed by Jonathan Hood and Lyudmila Slipchenko. Equations and examples remain under editorial review during the Fall 2026 website migration.
+:::
+
+## Vectors and molecular geometry
+
+1.  A unit cell of diamond is a cube of side *A*, with carbon atoms at each corner, at the centre of each face and, in addition, at positions displaced by $1/4 A (\mathbf{i} + \mathbf{j} + \mathbf{j})$ from each of those already mentioned; $\mathbf{i}, \mathbf{j}, \mathbf{k}$ are unit vectors along the cube axes. For visualization and discussion, see also the wiki page: <https://en.wikipedia.org/wiki/Diamond_cubic>. One corner of the cube is taken as the origin of coordinates. What are the vectors joining the atom at $1/4 A (\mathbf{i} + \mathbf{j} + \mathbf{j})$ to its four nearest neighbours? Determine the angle between the carbon bonds in diamond.
+
+## Determinants, inverses, and matrix algebra
+
+2.  Let $\mathbf{D} = \begin{pmatrix} 3 & 1 \\ 2 & 4 \end{pmatrix}$ and $\mathbf{E} = \begin{pmatrix} 1 & 0 \\ 5 & 2 \end{pmatrix}$.
+
+    - \(a\) Calculate $\det(\mathbf{D})$ and $\det(\mathbf{E})$.
+
+    - \(b\) Find $\det(\mathbf{D} \mathbf{E})$ by directly calculating the product $\mathbf{D} \mathbf{E}$ and then finding its determinant.
+
+    - \(c\) Verify that $\det(\mathbf{D} \mathbf{E}) = \det(\mathbf{D}) \cdot \det(\mathbf{E})$, illustrating the property $\det(\mathbf{A}\mathbf{B}) = \det(\mathbf{A}) \det(\mathbf{B})$.
+
+3.  $\mathbf{A}$ is a $2 \times 2$ matrix with $\det(\mathbf{A}) = 5$. What is $\det(3\mathbf{A})$ and $\det(\mathbf{A}^{-1})$ and $\det(\mathbf{A}^T)  ?$
+
+4.  The Pauli spin matrices in quantum mechanics are $A = \begin{pmatrix}
+    0 & 1 \\ 1 & 0
+    \end{pmatrix}, \quad
+    B = \begin{pmatrix} 0 & -i \\ i & 0\end{pmatrix}, \quad C = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}.$ Show that $A^2 = B^2 = C^2 = I$ (a unit matrix). Also show that any two of these matrices anti-commute, that is, $AB = -BA$, etc. Show that the commutator of A and B, that is, $AB - BA$, is $2iC$, and similarly for other pairs in cyclic order.
+
+5.  Given the matrices $A = \begin{pmatrix}
+    1 & -1 & 1 \\
+    4 & 0 & -1 \\
+    4 & -2 & 0
+    \end{pmatrix}, \quad
+    B = \begin{pmatrix}
+    1 & 0 & 1 \\
+    2 & 1 & 1 \\
+    2 & 1 & 2
+    \end{pmatrix}$
+
+    - \(a\) Find $A^{-1}, \; B^{-1}, \; B^{-1}AB, \;  B^{-1}A^{-1}B$.
+
+    - Show that the last two matrices are inverses, that is, that their product is the unit matrix.
+
+## Eigenvalues, eigenvectors, and diagonalization
+
+6.  Consider matrix $\mathbf{M} = \begin{pmatrix} 2 & -1 \\ -1 & 2 \end{pmatrix}$. Find
+
+    - the eigenvalues and eigenvectors;
+
+    - the matrix S which diagonalizes M and specifies the rotation to new axes (x',y') along the eigenvectors;
+
+    - describe the deformation relative to the new axes;
+
+    - verify that $S^{-1}MS$ is the diagonal matrix.
+
+7.  Find the eignvalues and eigenvectors of the real symmetric matrix $M = \begin{pmatrix}
+    A & H \\ H & B \end{pmatrix}.$ Show that the eigenvalues are real and the eigenvectors are perpendicular.
+
+8.  Explain the geometric interpretation of an eigenvalue $\lambda = 1$ for a transformation matrix $\mathbf{M}$. What does it imply about the vector $\mathbf{u}$ associated with this eigenvalue under the transformation $\mathbf{M} \mathbf{u} = \lambda \mathbf{u}$?
+
+9.  Show that the eigenvalues of the Hermitian matrix $\mathbf{H} = \begin{pmatrix} 2 & i \\ -i & 3 \end{pmatrix}$ are real. Find the eigenvalues and eigenvectors of $\mathbf{H}$ and verify that the eigenvectors corresponding to different eigenvalues are orthogonal.
+
+    Consider a Hermitian matrix $\mathbf{B}$ with eigenvalues $\lambda_1, \lambda_2,$ and $\lambda_3$, and corresponding orthogonal eigenvectors $\mathbf{v}_1, \mathbf{v}_2,$ and $\mathbf{v}_3$. Suppose a vector $\mathbf{w}$ can be written as a linear combination of the eigenvectors: $\mathbf{w} = c_1 \mathbf{v}_1 + c_2 \mathbf{v}_2 + c_3 \mathbf{v}_3$.
+
+    - \(a\) Show that applying $\mathbf{B}$ to $\mathbf{w}$ results in $\mathbf{B} \mathbf{w} = c_1 \lambda_1 \mathbf{v}_1 + c_2 \lambda_2 \mathbf{v}_2 + c_3 \lambda_3 \mathbf{v}_3$.
+
+    - \(b\) Explain why this result is useful when working with Hermitian matrices.
+
+## Normal-mode computation
+
+10. Consider a model of a linear triatomic molecule in which the forces between the atoms are approximated by springs. The outer atoms have mass $m$, the central atom has mass $M$, and both springs have force constant $k$.
+
+    ```{figure} ../assignments/figures/linear-triatomic-springs.svg
+    :alt: Three collinear masses m, M, and m connected by two springs with force constant k
+    :width: 80%
+
+    Linear triatomic mass-spring model with displacements $x$, $y$, and $z$.
+    ```
+
+    - Write Python code to calculate the eigenvalues and eigenvectors of the system matrix, representing the normal mode frequencies and mode shapes. Choose $k = 1, m = 1, M = 2.$
+
+    - Construct the general solution as a linear combination of the normal modes, with amplitudes determined by initial conditions. Pick different initial conditions, i.e., the initial displacements of the atoms in the system, e.g., $X0 = (1,0,0)$, $X0 = (0,1,0)$, $X0 = (1,0,1)$, etc. Decompose the initial displacement vectors into the eigenvectors. Then plot positions of the masses vs time in python.
+
+---
+
+*Migration source: `Homeworks/HW02.tex` from the archived Overleaf export.*
