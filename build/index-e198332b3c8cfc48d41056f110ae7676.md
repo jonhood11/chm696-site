@@ -1,0 +1,5 @@
+# Resources
+
+Course resources will be collected here.
+
+- [Python plotting demonstration](python-plotting.md)
