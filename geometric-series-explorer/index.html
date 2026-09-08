@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Geometric series explorer</title>
+<style>*{box-sizing:border-box}body{margin:0;padding:14px;background:white;color:#26313b;font:15px system-ui,sans-serif}main{max-width:950px;margin:auto}.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0}input,button{font:inherit}input[type=range]{flex:1;min-width:120px;accent-color:#246a9c}input[type=number]{width:85px;padding:5px}button{padding:6px 10px;background:#f6f8fa;border:1px solid #bcc5ce;border-radius:4px;cursor:pointer}canvas{display:block;width:100%;height:300px;touch-action:none;border:1px solid #dce1e5;border-radius:5px}#sequence{height:235px}.note{font-size:13px;color:#59636c;margin:9px 0}.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:13px;margin:9px 0}h2{font-size:16px;font-weight:500;margin:14px 0 6px}output{min-width:55px}#status{min-height:44px}button:focus-visible,input:focus-visible{outline:2px solid #246a9c}</style><script>(function(){var p=window.location.pathname;if(p.endsWith('/index.html'))window.location.replace((p.slice(0,-10)||'/')+window.location.search+window.location.hash);})();</script></head><body><main>
+<div>S<sub>N</sub>(x) = ∑<sub>n=0</sub><sup>N</sup> (−x/2)<sup>n</sup> &nbsp; · &nbsp; f(x) = 1/(1 + x/2)</div>
+<div class="row"><label for="order">Highest power N</label><input id="order" type="range" min="0" max="80" step="1" value="8"><output id="orderText"></output><button id="play">Play</button><button id="reset">Reset</button></div>
+<div class="row"><label for="point">Selected x</label><input id="point" type="number" min="-3" max="3" step="0.01" value="1"><button data-x="1">Inside: 1</button><button data-x="1.9">Near: 1.9</button><button data-x="2.1">Outside: 2.1</button></div>
+<input id="pointSlider" type="range" min="-3" max="3" step="0.01" value="1" aria-label="Selected x coordinate" style="width:100%">
+<h2>Function and partial sum</h2><canvas id="function" role="img" aria-label="Exact function and partial sum versus x. Drag horizontally to select x; a keyboard-accessible slider is provided above."></canvas>
+<div class="legend"><span>Black: f(x)</span><span style="color:#246a9c">Blue: S<sub>N</sub>(x)</span><span style="color:#287648">Shading: −2 &lt; x &lt; 2</span></div>
+<div id="status" aria-live="polite"></div>
+<h2>Partial sums at the selected x</h2><canvas id="sequence" role="img" aria-label="Partial sums versus highest power N at the selected x, with the current order highlighted"></canvas>
+<div class="row"><label for="extent">Lower plot vertical range ±</label><input id="extent" type="number" min="1" max="1000000" value="5" step="1"><button id="fit">Fit all partial sums</button></div>
+<p class="note">Drag across the upper plot to change x. Both plots keep their scales fixed as N changes. Values outside the vertical ranges are clipped; use the lower range control to inspect growth. The lower plot always shows orders 0–80. The exact function is undefined at x = −2; outside the shaded interval its value is not the sum of this series.</p>
+</main><script>
+// Pure math.
+function sums(x,max){let term=1,total=1,out=[1];for(let n=1;n<=max;n++){term*=-x/2;total+=term;out.push(total)}return out}
+function partial(x,n){return sums(x,n)[n]}
+// End pure math.
+const $=s=>document.querySelector(s),topCanvas=$('#function'),bottomCanvas=$('#sequence');let N=8,x=1,range=5,running=false,last=0,dragging=false,topBounds;
+function fmt(v){return Number(v.toPrecision(6)).toString()}
+function setup(canvas,xmin,xmax,ymin,ymax){const w=canvas.clientWidth,h=canvas.clientHeight,dpr=devicePixelRatio||1;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);const c=canvas.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);const b={l:53,r:w-16,t:18,b:h-35},X=v=>b.l+(v-xmin)/(xmax-xmin)*(b.r-b.l),Y=v=>b.b-(v-ymin)/(ymax-ymin)*(b.b-b.t);c.font='12px system-ui';return {c,w,h,b,X,Y,xmin,xmax,ymin,ymax}}
+function axes(p,xticks,yticks,xlabel){const {c,b,X,Y}=p;c.strokeStyle='#e5e8eb';c.lineWidth=1;c.fillStyle='#58616a';for(const y of yticks){c.beginPath();c.moveTo(b.l,Y(y));c.lineTo(b.r,Y(y));c.stroke();c.textAlign='right';c.fillText(fmt(y),b.l-7,Y(y)+4)}for(const v of xticks){c.beginPath();c.moveTo(X(v),b.t);c.lineTo(X(v),b.b);c.stroke();c.textAlign='center';c.fillText(v,X(v),b.b+18)}c.fillText(xlabel,b.r,b.b+31)}
+function plot(p,points,color,width=2,dash=[]){const {c,b,X,Y}=p;c.save();c.beginPath();c.rect(b.l,b.t,b.r-b.l,b.b-b.t);c.clip();c.beginPath();let move=true;for(const [a,v] of points){if(v===null||!Number.isFinite(v)){move=true;continue}if(move){c.moveTo(X(a),Y(v));move=false}else c.lineTo(X(a),Y(v))}c.strokeStyle=color;c.lineWidth=width;c.setLineDash(dash);c.stroke();c.restore()}
+function dot(p,a,v,color,r=4){if(v<p.ymin||v>p.ymax)return;const {c,X,Y}=p;c.beginPath();c.arc(X(a),Y(v),r,0,Math.PI*2);c.fillStyle=color;c.fill()}
+function draw(){
+ $('#orderText').textContent=N+' ('+(N+1)+' terms)';const p=setup(topCanvas,-3,3,-5,8);topBounds=p;
+ p.c.fillStyle='#e9f4e9';p.c.fillRect(p.X(-2),p.b.t,p.X(2)-p.X(-2),p.b.b-p.b.t);axes(p,[-3,-2,-1,0,1,2,3],[-4,-2,0,2,4,6,8],'x');
+ for(const boundary of [-2,2])plot(p,[[boundary,-5],[boundary,8]],'#548363',1.5,[5,4]);
+ const exact=[],approx=[];for(let i=0;i<=900;i++){const a=-3+6*i/900;exact.push([a,Math.abs(a+2)<.009?null:1/(1+a/2)]);approx.push([a,partial(a,N)])}plot(p,exact,'#252b31',2);plot(p,approx,'#246a9c',2.5);
+ plot(p,[[x,-5],[x,8]],'#b65a19',1.5,[4,4]);dot(p,x,partial(x,N),'#246a9c',5);if(x!==-2)dot(p,x,1/(1+x/2),'#252b31',4);
+ const q=setup(bottomCanvas,0,80,-range,range),all=sums(x,80);axes(q,[0,20,40,60,80],[-range,-range/2,0,range/2,range],'N');
+ if(x!==-2)plot(q,[[0,1/(1+x/2)],[80,1/(1+x/2)]],'#252b31',1.5,[5,4]);plot(q,all.map((v,i)=>[i,v]),'#246a9c',1.4);all.forEach((v,i)=>dot(q,i,v,'#246a9c',2));plot(q,[[N,-range],[N,range]],'#b65a19',1,[4,4]);dot(q,N,all[N],'#b65a19',5);
+ const behavior=Math.abs(x)<2?'Inside the interval: partial sums converge to f(x).':x===2?'Endpoint x = 2: partial sums alternate between 1 and 0.':x===-2?'Endpoint x = −2: S_N = N + 1, and f(x) is undefined.':'Outside the interval: the terms do not tend to zero, so the series diverges.';
+ $('#status').textContent='x = '+fmt(x)+': S_'+N+' = '+fmt(all[N])+(x!==-2?'; f(x) = '+fmt(1/(1+x/2))+'. ':'. ')+behavior;
+}
+function stop(){running=false;$('#play').textContent='Play'}
+function setX(v){if(!Number.isFinite(v)||v<-3||v>3)return;x=v;$('#point').value=x;$('#pointSlider').value=x;draw()}
+$('#order').addEventListener('input',()=>{stop();N=Number($('#order').value);draw()});$('#point').addEventListener('input',()=>{if($('#point').value!=='')setX(Number($('#point').value))});$('#pointSlider').addEventListener('input',()=>setX(Number($('#pointSlider').value)));document.querySelectorAll('[data-x]').forEach(b=>b.addEventListener('click',()=>setX(Number(b.dataset.x))));
+$('#extent').addEventListener('input',()=>{const v=Number($('#extent').value);if(v>=1&&v<=1e6){range=v;draw()}});$('#fit').addEventListener('click',()=>{range=Math.min(1e6,Math.max(1,Math.ceil(Math.max(...sums(x,80).map(Math.abs))*1.15)));$('#extent').value=range;draw()});
+function animate(t){if(!running)return;if(t-last>=180){last=t;N++;$('#order').value=N;draw();if(N>=80){stop();return}}requestAnimationFrame(animate)}$('#play').addEventListener('click',()=>{if(running){stop();return}if(N>=80)N=0;running=true;last=0;$('#play').textContent='Pause';requestAnimationFrame(animate)});
+$('#reset').addEventListener('click',()=>{stop();N=8;range=5;$('#extent').value=5;$('#order').value=8;setX(1)});
+function drag(e){const r=topCanvas.getBoundingClientRect(),p=topBounds,v=-3+6*(e.clientX-r.left-p.b.l)/(p.b.r-p.b.l);setX(Math.round(Math.max(-3,Math.min(3,v))*100)/100)}topCanvas.addEventListener('pointerdown',e=>{dragging=true;topCanvas.setPointerCapture(e.pointerId);drag(e)});topCanvas.addEventListener('pointermove',e=>{if(dragging)drag(e)});topCanvas.addEventListener('pointerup',()=>dragging=false);topCanvas.addEventListener('pointercancel',()=>dragging=false);
+new ResizeObserver(draw).observe(topCanvas);
+function fitFrame(){const f=window.frameElement;if(!f)return;const s=getComputedStyle(document.body),height=Math.ceil(document.querySelector('main').getBoundingClientRect().height+parseFloat(s.paddingTop)+parseFloat(s.paddingBottom)+4);f.style.setProperty('height',height+'px','important');f.style.setProperty('max-height','none','important');f.style.setProperty('aspect-ratio','auto','important')}
+new ResizeObserver(fitFrame).observe(document.querySelector('main'));window.addEventListener('load',fitFrame);
+</script></body></html>

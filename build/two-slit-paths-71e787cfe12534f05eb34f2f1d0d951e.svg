@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="440" viewBox="0 0 980 440" role="img" aria-labelledby="title desc">
+<title id="title">Right-moving plane wave and two-slit path geometry</title>
+<desc id="desc">A plane wave travels right toward slits at zero, plus and minus d over two. Paths r plus and r minus connect the slits to a point L,y on a screen. The screen distance is L and the vertical displacement is y. Geometry is schematic, not to scale.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#495663"/></marker>
+<marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#246a9c"/></marker>
+</defs>
+<rect width="980" height="440" fill="white"/>
+<g font-family="Arial, sans-serif" font-size="20" fill="#26313b">
+<text x="130" y="40" text-anchor="middle">Incident plane wave</text>
+<path d="M62 70H211" fill="none" stroke="#246a9c" stroke-width="3" marker-end="url(#blue)"/>
+<g stroke="#246a9c" stroke-width="2" opacity=".48">
+<path d="M55 115V342 M95 115V342 M135 115V342 M175 115V342 M215 115V342"/>
+</g>
+<text x="130" y="369" font-size="16" text-anchor="middle" fill="#52606d">Wavefronts</text>
+<text x="310" y="85" text-anchor="middle">Two slits</text>
+<path d="M310 108V170 M310 190V290 M310 310V355" stroke="#495663" stroke-width="9"/>
+<path d="M298 240H893" stroke="#a7aeb5" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<text x="901" y="247" font-style="italic">x</text>
+<text x="299" y="263" text-anchor="end" font-size="16">0</text>
+<path d="M266 181V299" stroke="#495663" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="254" y="234" text-anchor="end" font-style="italic">d</text>
+<path d="M310 180L820 125" stroke="#246a9c" stroke-width="3"/>
+<path d="M310 300L820 125" stroke="#b65a19" stroke-width="3"/>
+<circle cx="310" cy="180" r="4" fill="#246a9c"/><circle cx="310" cy="300" r="4" fill="#b65a19"/>
+<text x="328" y="160" font-size="18">(0, d/2)</text>
+<text x="329" y="327" font-size="18">(0, −d/2)</text>
+<text x="560" y="140" fill="#246a9c" font-style="italic">r<tspan baseline-shift="sub" font-size="15">+</tspan></text>
+<text x="557" y="235" fill="#b65a19" font-style="italic">r<tspan baseline-shift="sub" font-size="15">−</tspan></text>
+<path d="M820 90V355" stroke="#495663" stroke-width="5"/>
+<text x="820" y="65" text-anchor="middle">Screen</text>
+<circle cx="820" cy="125" r="6" fill="#26313b"/>
+<text x="837" y="117">(L, y)</text>
+<path d="M857 126V239" stroke="#495663" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="869" y="187" font-style="italic">y</text>
+<path d="M310 366V398 M820 366V398" stroke="#a7aeb5"/>
+<path d="M311 388H819" stroke="#495663" stroke-width="1.4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<rect x="550" y="374" width="30" height="27" fill="white"/><text x="565" y="394" text-anchor="middle" font-style="italic">L</text>
+</g></svg>

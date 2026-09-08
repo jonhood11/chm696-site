@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Matrix transformation explorer</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:16px;color:#26313b;background:#fff;font:15px system-ui,sans-serif}main{max-width:950px;margin:auto}.controls{display:flex;gap:20px;align-items:center;flex-wrap:wrap}.matrix{display:grid;grid-template-columns:90px 90px;gap:6px;padding:7px 10px;border-left:2px solid #444;border-right:2px solid #444}.matrix input{width:90px;padding:6px;border:1px solid #b8c2cb;border-radius:4px;font:inherit}select,button{font:inherit;padding:7px;border:1px solid #bac4cd;border-radius:5px;background:#fafbfc;color:inherit}label{display:flex;gap:8px;align-items:center}.presets{display:flex;gap:8px;align-items:center}.slider{display:flex;gap:12px;align-items:center;margin:14px 0 5px}.slider input{flex:1;min-width:70px;accent-color:#5b468e}output{min-width:75px;font-variant-numeric:tabular-nums}canvas{display:block;width:100%;height:390px;border:1px solid #e0e4e8;border-radius:6px;touch-action:pan-y}.legend{display:flex;gap:15px;flex-wrap:wrap;margin:9px 0;font-size:13px}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}.note{font-size:13px;color:#59636c;margin:8px 0}.error{color:#ae2525;min-height:19px;font-size:13px}#hover{min-height:20px;font-size:13px;font-variant-numeric:tabular-nums}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #246a9c;outline-offset:2px}@media(max-width:500px){body{padding:8px}.controls{gap:12px}.matrix{grid-template-columns:70px 70px}.matrix input{width:70px}canvas{height:340px}}
+</style><script>(function(){var p=window.location.pathname;if(p.endsWith('/index.html'))window.location.replace((p.slice(0,-10)||'/')+window.location.search+window.location.hash);})();</script></head><body><main>
+<div class="controls"><label>M = <span class="matrix"><input aria-label="Matrix row 1 column 1" type="number" step="any" value="1.5"><input aria-label="Matrix row 1 column 2" type="number" step="any" value="0.5"><input aria-label="Matrix row 2 column 1" type="number" step="any" value="0"><input aria-label="Matrix row 2 column 2" type="number" step="any" value="1"></span></label>
+<div class="presets"><label>Examples <select id="preset"><option value="custom">Custom matrix</option><option value="stretch" selected>Stretch + shear</option><option value="rotation">Clockwise rotation</option><option value="reflection">Reflection</option><option value="collapse">Collapse to a line</option><option value="zero">Zero matrix</option><option value="identity">Identity</option></select></label><button id="reset" type="button">Reset</button></div></div>
+<div class="error" id="error" role="status"></div>
+<div class="slider"><span>Original</span><input id="progress" type="range" min="0" max="1" step="0.001" value="0" aria-label="Transformation progress"><span>Transformed</span><output id="percent">t = 0.00</output><button id="play" type="button">Play</button></div>
+<canvas id="plot" role="img" aria-label="Grid of vectors interpolating from their original positions to their images under the entered matrix"></canvas>
+<div class="legend"><span><i class="dot" style="background:#c7ccd1"></i>Original grid</span><span><i class="dot" style="background:#5b468e"></i>Moving grid</span><span style="color:#246a9c">Blue: image of (1, 0)</span><span style="color:#b65a19">Orange: image of (0, 1)</span></div>
+<div id="hover">Hover over a point to see its coordinates.</div>
+<p class="note">Each point represents a vector from the origin. The slider uses v(t) = (1 − t)v + tMv. The viewing scale stays fixed while you move the slider; it adjusts when you change M.</p>
+<p class="note">Points move along straight paths. Even for a rotation matrix, intermediate frames need not be pure rotations.</p>
+</main><script>
+// Keep the same-origin lecture embed as tall as its content, including on resize.
+function fitLectureFrame(){
+ const frame=window.frameElement;
+ if(!frame)return;
+ const bodyStyle=getComputedStyle(document.body);
+ const needed=Math.ceil(document.querySelector('main').getBoundingClientRect().height+parseFloat(bodyStyle.paddingTop)+parseFloat(bodyStyle.paddingBottom)+4);
+ frame.style.setProperty('height',needed+'px','important');
+ frame.style.setProperty('max-height','none','important');
+ frame.style.setProperty('aspect-ratio','auto','important');
+ frame.setAttribute('height',String(needed));
+}
+new ResizeObserver(fitLectureFrame).observe(document.querySelector('main'));
+window.addEventListener('load',fitLectureFrame);
+// Pure math, also exercised by the local verification test.
+function applyMatrix(m,p){return [m[0]*p[0]+m[1]*p[1],m[2]*p[0]+m[3]*p[1]]}
+function interpolate(m,p,t){const q=applyMatrix(m,p);return [(1-t)*p[0]+t*q[0],(1-t)*p[1]+t*q[1]]}
+// End pure math.
+const inputs=[...document.querySelectorAll('.matrix input')],slider=document.querySelector('#progress'),canvas=document.querySelector('#plot'),ctx=canvas.getContext('2d');
+const preset=document.querySelector('#preset'),play=document.querySelector('#play'),error=document.querySelector('#error'),hover=document.querySelector('#hover');
+const presets={stretch:[1.5,.5,0,1],rotation:[Math.SQRT1_2,Math.SQRT1_2,-Math.SQRT1_2,Math.SQRT1_2],reflection:[-1,0,0,1],collapse:[1,1,0,0],zero:[0,0,0,0],identity:[1,0,0,1]};
+let matrix=presets.stretch.slice(),running=false,lastTime=0,width=0,height=0,scale=1,points=[],hovered=null;
+const grid=[];for(let x=-4;x<=4;x++)for(let y=-4;y<=4;y++)grid.push([x,y]);
+function screen(p){return [width/2+p[0]*scale,height/2-p[1]*scale]}
+function line(a,b,color,lw=1){const x=screen(a),y=screen(b);ctx.beginPath();ctx.moveTo(...x);ctx.lineTo(...y);ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.stroke()}
+function arrow(p,color){const end=screen(p),start=screen([0,0]),dx=end[0]-start[0],dy=end[1]-start[1],len=Math.hypot(dx,dy);if(len<2)return;line([0,0],p,color,2.8);const angle=Math.atan2(dy,dx),h=Math.min(11,len*.35);ctx.beginPath();ctx.moveTo(...end);ctx.lineTo(end[0]-h*Math.cos(angle-.4),end[1]-h*Math.sin(angle-.4));ctx.lineTo(end[0]-h*Math.cos(angle+.4),end[1]-h*Math.sin(angle+.4));ctx.closePath();ctx.fillStyle=color;ctx.fill()}
+function fmt(x){return Math.abs(x)<1e-12?'0':Number(x.toPrecision(5)).toString()}
+function draw(){
+ const t=Number(slider.value);document.querySelector('#percent').textContent='t = '+t.toFixed(2);
+ ctx.clearRect(0,0,width,height);let bx=4,by=4;for(const p of grid){const q=applyMatrix(matrix,p);bx=Math.max(bx,Math.abs(q[0]));by=Math.max(by,Math.abs(q[1]))}scale=Math.min((width-54)/bx/2,(height-54)/by/2);
+ line([-bx,0],[bx,0],'#adb5bd');line([0,-by],[0,by],'#adb5bd');
+ for(let i=-4;i<=4;i++){line([i,-4],[i,4],'#e3e6e9');line([-4,i],[4,i],'#e3e6e9')}
+ for(const p of grid){const q=screen(p);ctx.beginPath();ctx.arc(...q,2,0,2*Math.PI);ctx.fillStyle='#c7ccd1';ctx.fill()}
+ for(let i=-4;i<=4;i++){line(interpolate(matrix,[i,-4],t),interpolate(matrix,[i,4],t),'#9586b9',1.1);line(interpolate(matrix,[-4,i],t),interpolate(matrix,[4,i],t),'#9586b9',1.1)}
+ points=grid.map(p=>({p,q:interpolate(matrix,p,t)}));for(const {q} of points){const s=screen(q);ctx.beginPath();ctx.arc(...s,2.6,0,2*Math.PI);ctx.fillStyle='#5b468e';ctx.fill()}
+ arrow(interpolate(matrix,[1,0],t),'#246a9c');arrow(interpolate(matrix,[0,1],t),'#b65a19');
+ if(hovered){arrow(interpolate(matrix,hovered,t),'#17815a')}
+ ctx.fillStyle='#515b64';ctx.font='12px system-ui';ctx.fillText('0',width/2+5,height/2+14);ctx.fillText('x',width-16,height/2-7);ctx.fillText('y',width/2+7,15);
+ ctx.fillText('Grid spacing: 1 unit',12,19);
+}
+function stop(){running=false;play.textContent='Play'}
+function readMatrix(){stop();const next=inputs.map(e=>e.value.trim()===''?NaN:Number(e.value));if(!next.every(Number.isFinite)||!grid.every(p=>applyMatrix(next,p).every(Number.isFinite))){error.textContent='Enter four finite numbers whose transformed coordinates fit the numeric range.';return}error.textContent='';matrix=next;hovered=null;hover.textContent='Hover over a point to see its coordinates.';draw()}
+inputs.forEach(e=>e.addEventListener('input',()=>{preset.value='custom';readMatrix()}));
+slider.addEventListener('input',()=>{stop();hovered=null;hover.textContent='Hover over a point to see its coordinates.';draw()});
+preset.addEventListener('change',()=>{if(!presets[preset.value])return;inputs.forEach((e,i)=>e.value=presets[preset.value][i]);slider.value=0;readMatrix()});
+document.querySelector('#reset').addEventListener('click',()=>{stop();slider.value=0;hovered=null;draw()});
+function frame(now){if(!running)return;if(lastTime)slider.value=Math.min(1,Number(slider.value)+(now-lastTime)/3500);lastTime=now;draw();if(Number(slider.value)>=1){stop();return}requestAnimationFrame(frame)}
+play.addEventListener('click',()=>{if(running){stop();return}if(Number(slider.value)>=1)slider.value=0;running=true;lastTime=0;play.textContent='Pause';requestAnimationFrame(frame)});
+canvas.addEventListener('pointermove',event=>{const rect=canvas.getBoundingClientRect(),x=event.clientX-rect.left,y=event.clientY-rect.top;let best=null,distance=12;for(const item of points){const s=screen(item.q),d=Math.hypot(s[0]-x,s[1]-y);if(d<distance){distance=d;best=item}}hovered=best?.p||null;if(best){const dest=applyMatrix(matrix,best.p);hover.textContent='v = ('+best.p.join(', ')+') → current = ('+best.q.map(fmt).join(', ')+') → Mv = ('+dest.map(fmt).join(', ')+')'}else hover.textContent='Hover over a point to see its coordinates.';draw()});
+canvas.addEventListener('pointerleave',()=>{hovered=null;hover.textContent='Hover over a point to see its coordinates.';draw()});
+new ResizeObserver(()=>{width=canvas.clientWidth;height=canvas.clientHeight;const dpr=window.devicePixelRatio||1;canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw()}).observe(canvas);
+</script></body></html>

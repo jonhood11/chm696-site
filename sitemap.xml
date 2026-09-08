@@ -5,6 +5,15 @@
     <loc>http://localhost:3000</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/lectures/series-and-limits</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/lectures/complex-numbers</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/lectures/linear-algebra</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/resources</loc>
   </url>
   <url>
