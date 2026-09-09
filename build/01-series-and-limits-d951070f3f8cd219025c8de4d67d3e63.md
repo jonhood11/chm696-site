@@ -284,9 +284,9 @@ diverges there.
 
 Here the slider uses $S_N(x)=\sum_{n=0}^{N}(-x/2)^n$, so it retains $N+1$ terms.
 
-<a href="/chm696-site/geometric-series-explorer/index.html" target="_blank" rel="noopener noreferrer">Open in new tab ↗</a>
+<a href="https://jonhood11.github.io/chm696-site/geometric-series-explorer/index.html" target="_blank" rel="noopener noreferrer">Open in new tab ↗</a>
 
-<iframe src="/chm696-site/geometric-series-explorer/index.html" title="Interactive geometric series and convergence interval" style="width:100%;height:950px;border:0;"></iframe>
+<iframe src="https://jonhood11.github.io/chm696-site/geometric-series-explorer/index.html" title="Interactive geometric series and convergence interval" style="width:100%;height:950px;border:0;"></iframe>
 
 #### Example 2: the same radius, different endpoints
 
@@ -472,9 +472,9 @@ absolute error. Optional green shading marks sampled points where the error
 is below a chosen tolerance. This is not the radius of convergence: a finite
 polynomial can be inaccurate even where the infinite series converges.
 
-<a href="/chm696-site/maclaurin-explorer/index.html" target="_blank" rel="noopener noreferrer">Open in new tab ↗</a>
+<a href="https://jonhood11.github.io/chm696-site/maclaurin-explorer/index.html" target="_blank" rel="noopener noreferrer">Open in new tab ↗</a>
 
-<iframe src="/chm696-site/maclaurin-explorer/index.html" title="Interactive Maclaurin approximation and accuracy explorer" style="width:100%;height:950px;border:0;"></iframe>
+<iframe src="https://jonhood11.github.io/chm696-site/maclaurin-explorer/index.html" title="Interactive Maclaurin approximation and accuracy explorer" style="width:100%;height:950px;border:0;"></iframe>
 
 :::{admonition} Preview: singularities in the complex plane
 We will study complex analysis later in the course, but it gives a useful

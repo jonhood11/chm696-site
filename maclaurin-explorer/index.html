@@ -40,4 +40,21 @@ function animate(t){if(!running)return;if(t-last>650){last=t;N++;$('#order').val
 $('#reset').addEventListener('click',()=>{stop();key='cos';N=2;extent=3;tolerance=.01;$('#function').value=key;$('#order').value=N;$('#range').value=extent;$('#tolerance').value=tolerance;$('#shade').checked=false;$('#message').textContent='';Plotly.purge('upper');Plotly.purge('lower');draw()});
 function fit(){const f=window.frameElement;if(!f)return;const s=getComputedStyle(document.body),h=Math.ceil(document.querySelector('main').getBoundingClientRect().height+parseFloat(s.paddingTop)+parseFloat(s.paddingBottom)+4);f.style.setProperty('height',h+'px','important');f.style.setProperty('max-height','none','important');f.style.setProperty('aspect-ratio','auto','important')}
 new ResizeObserver(fit).observe(document.querySelector('main'));window.addEventListener('load',fit);draw();
+</script>
+<script>
+// MyST wraps embeds in an absolutely positioned, video-aspect-ratio box.
+// Reserve the app's full height in the article, not just in the iframe.
+function reserveLectureSpace() {
+  const frame = window.frameElement;
+  if (!frame) return;
+  const wrapper = frame.parentElement;
+  if (wrapper && wrapper.style.paddingBottom) {
+    wrapper.style.setProperty('padding-bottom', '0px', 'important');
+    wrapper.style.setProperty('height', frame.style.height || '1000px', 'important');
+    frame.style.setProperty('position', 'relative', 'important');
+  }
+}
+window.addEventListener('load', reserveLectureSpace);
+new ResizeObserver(reserveLectureSpace).observe(document.querySelector('main'));
+reserveLectureSpace();
 </script></body></html>

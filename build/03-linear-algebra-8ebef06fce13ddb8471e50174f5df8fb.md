@@ -145,9 +145,9 @@ This provides a visual way to represent a matrix: by observing how it transforms
 
 Enter any $2\times2$ matrix below and move the slider to see where each grid point goes. The points follow $\mathbf{v}(t)=(1-t)\mathbf{v}+tM\mathbf{v}$, from the original grid at $t=0$ to its transformed image at $t=1$.
 
-<a href="/chm696-site/matrix-explorer/index.html" target="_blank" rel="noopener noreferrer">Open in new tab ↗</a>
+<a href="https://jonhood11.github.io/chm696-site/matrix-explorer/index.html" target="_blank" rel="noopener noreferrer">Open in new tab ↗</a>
 
-<iframe src="/chm696-site/matrix-explorer/index.html" title="Interactive matrix transformation of a grid" style="width:100%;height:720px;border:0;"></iframe>
+<iframe src="https://jonhood11.github.io/chm696-site/matrix-explorer/index.html" title="Interactive matrix transformation of a grid" style="width:100%;height:720px;border:0;"></iframe>
 
 The identity matrix $\mathbf{I}$ is defined as:
 

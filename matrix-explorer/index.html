@@ -64,4 +64,21 @@ play.addEventListener('click',()=>{if(running){stop();return}if(Number(slider.va
 canvas.addEventListener('pointermove',event=>{const rect=canvas.getBoundingClientRect(),x=event.clientX-rect.left,y=event.clientY-rect.top;let best=null,distance=12;for(const item of points){const s=screen(item.q),d=Math.hypot(s[0]-x,s[1]-y);if(d<distance){distance=d;best=item}}hovered=best?.p||null;if(best){const dest=applyMatrix(matrix,best.p);hover.textContent='v = ('+best.p.join(', ')+') → current = ('+best.q.map(fmt).join(', ')+') → Mv = ('+dest.map(fmt).join(', ')+')'}else hover.textContent='Hover over a point to see its coordinates.';draw()});
 canvas.addEventListener('pointerleave',()=>{hovered=null;hover.textContent='Hover over a point to see its coordinates.';draw()});
 new ResizeObserver(()=>{width=canvas.clientWidth;height=canvas.clientHeight;const dpr=window.devicePixelRatio||1;canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw()}).observe(canvas);
+</script>
+<script>
+// MyST wraps embeds in an absolutely positioned, video-aspect-ratio box.
+// Reserve the app's full height in the article, not just in the iframe.
+function reserveLectureSpace() {
+  const frame = window.frameElement;
+  if (!frame) return;
+  const wrapper = frame.parentElement;
+  if (wrapper && wrapper.style.paddingBottom) {
+    wrapper.style.setProperty('padding-bottom', '0px', 'important');
+    wrapper.style.setProperty('height', frame.style.height || '1000px', 'important');
+    frame.style.setProperty('position', 'relative', 'important');
+  }
+}
+window.addEventListener('load', reserveLectureSpace);
+new ResizeObserver(reserveLectureSpace).observe(document.querySelector('main'));
+reserveLectureSpace();
 </script></body></html>

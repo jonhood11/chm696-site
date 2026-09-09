@@ -42,4 +42,21 @@ function drag(e){const r=topCanvas.getBoundingClientRect(),p=topBounds,v=-3+6*(e
 new ResizeObserver(draw).observe(topCanvas);
 function fitFrame(){const f=window.frameElement;if(!f)return;const s=getComputedStyle(document.body),height=Math.ceil(document.querySelector('main').getBoundingClientRect().height+parseFloat(s.paddingTop)+parseFloat(s.paddingBottom)+4);f.style.setProperty('height',height+'px','important');f.style.setProperty('max-height','none','important');f.style.setProperty('aspect-ratio','auto','important')}
 new ResizeObserver(fitFrame).observe(document.querySelector('main'));window.addEventListener('load',fitFrame);
+</script>
+<script>
+// MyST wraps embeds in an absolutely positioned, video-aspect-ratio box.
+// Reserve the app's full height in the article, not just in the iframe.
+function reserveLectureSpace() {
+  const frame = window.frameElement;
+  if (!frame) return;
+  const wrapper = frame.parentElement;
+  if (wrapper && wrapper.style.paddingBottom) {
+    wrapper.style.setProperty('padding-bottom', '0px', 'important');
+    wrapper.style.setProperty('height', frame.style.height || '1000px', 'important');
+    frame.style.setProperty('position', 'relative', 'important');
+  }
+}
+window.addEventListener('load', reserveLectureSpace);
+new ResizeObserver(reserveLectureSpace).observe(document.querySelector('main'));
+reserveLectureSpace();
 </script></body></html>
