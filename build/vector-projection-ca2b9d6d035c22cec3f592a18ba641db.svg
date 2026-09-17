@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300">
+<title>Projection of b onto a</title>
+<defs><marker id="blue" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0L9 3.5L0 7" fill="#276b9d"/></marker><marker id="gold" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0L9 3.5L0 7" fill="#9a6620"/></marker><marker id="green" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0L9 3.5L0 7" fill="#287851"/></marker></defs>
+<rect width="560" height="300" fill="white"/>
+<path d="M35 225H520" stroke="#c4c9ce" stroke-width="2"/>
+<path d="M65 225L465 225" stroke="#276b9d" stroke-width="3" marker-end="url(#blue)"/>
+<path d="M65 225L305 55" stroke="#9a6620" stroke-width="3" marker-end="url(#gold)"/>
+<path d="M305 55V225" stroke="#6f727b" stroke-width="2" stroke-dasharray="6 5"/>
+<path d="M287 225V207H305" fill="none" stroke="#6f727b" stroke-width="1.5"/>
+<path d="M65 225L305 225" stroke="#287851" stroke-width="5" marker-end="url(#green)"/>
+<circle cx="65" cy="225" r="4" fill="#333"/>
+<g font-family="Arial,sans-serif" font-size="22"><text x="52" y="255">0</text><text x="476" y="215" fill="#276b9d">a</text><text x="302" y="40" fill="#9a6620">b</text><text x="142" y="267" fill="#287851">projection of b onto a</text></g>
+</svg>

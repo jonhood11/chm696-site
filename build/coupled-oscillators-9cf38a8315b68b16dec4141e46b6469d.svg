@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 710 170" role="img" aria-labelledby="title desc">
+<title id="title">Two equal masses coupled by three identical springs between fixed walls</title>
+<desc id="desc">Wall, spring K, mass m, spring K, mass m, spring K, wall. Both displacement coordinates x and y are positive to the right from equilibrium.</desc>
+<rect width="710" height="170" fill="white"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#343434"/></marker></defs>
+<g stroke="#343434" stroke-width="2.4" fill="none" stroke-linejoin="round">
+<path d="M60 43V107 M650 43V107"/>
+<path d="M60 46l-10 10 M60 60l-10 10 M60 74l-10 10 M60 88l-10 10 M60 102l-10 10 M650 46l10 10 M650 60l10 10 M650 74l10 10 M650 88l10 10 M650 102l10 10" stroke-width="1.5"/>
+<path d="M 60 75 L 75 75 L 82.23529411764706 66 L 89.47058823529412 84 L 96.70588235294117 66 L 103.94117647058823 84 L 111.1764705882353 66 L 118.41176470588235 84 L 125.64705882352942 66 L 132.88235294117646 84 L 140.11764705882354 66 L 147.3529411764706 84 L 154.58823529411765 66 L 161.8235294117647 84 L 169.05882352941177 66 L 176.29411764705884 84 L 183.52941176470588 66 L 190.76470588235293 84 L 198 75 L 213 75"/>
+<path d="M 267 75 L 282 75 L 290 66 L 298 84 L 306 66 L 314 84 L 322 66 L 330 84 L 338 66 L 346 84 L 354 66 L 362 84 L 370 66 L 378 84 L 386 66 L 394 84 L 402 66 L 410 84 L 418 75 L 433 75"/>
+<path d="M 487 75 L 502 75 L 509.8235294117647 66 L 517.6470588235294 84 L 525.4705882352941 66 L 533.2941176470588 84 L 541.1176470588235 66 L 548.9411764705883 84 L 556.7647058823529 66 L 564.5882352941177 84 L 572.4117647058823 66 L 580.2352941176471 84 L 588.0588235294117 66 L 595.8823529411765 84 L 603.7058823529412 66 L 611.5294117647059 84 L 619.3529411764706 66 L 627.1764705882352 84 L 635 75 L 650 75"/>
+</g>
+<g fill="#bd3c43" stroke="#963038" stroke-width="2"><circle cx="240" cy="75" r="27"/><circle cx="460" cy="75" r="27"/></g>
+<g font-family="Georgia,serif" font-size="24" font-style="italic" text-anchor="middle">
+<text x="136" y="44">K</text><text x="350" y="44">K</text><text x="570" y="44">K</text>
+<text x="240" y="83" fill="white">m</text><text x="460" y="83" fill="white">m</text>
+<text x="270" y="153">x</text><text x="490" y="153">y</text></g>
+<g stroke="#343434" stroke-width="1.8" marker-end="url(#arrow)"><path d="M240 125H300"/><path d="M460 125H520"/></g>
+<g stroke="#888" stroke-dasharray="3 3"><path d="M240 107V133"/><path d="M460 107V133"/></g>
+</svg>

@@ -14,6 +14,15 @@
     <loc>http://localhost:3000/lectures/linear-algebra</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/lectures/a-projections-and-gram-schmidt</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/lectures/eigenvalues-and-eigenvectors</loc>
+  </url>
+  <url>
+    <loc>http://localhost:3000/lectures/a-normal-modes</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/resources</loc>
   </url>
   <url>

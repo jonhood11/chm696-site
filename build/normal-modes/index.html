@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Normal modes explorer</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:14px;background:white;color:#26313b;font:15px system-ui,sans-serif}main{max-width:1000px;margin:auto}.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:14px}label{display:flex;align-items:center;gap:6px}input,select,button{font:inherit;padding:6px;border:1px solid #bbc4cc;border-radius:4px}input[type=number]{width:72px}input[type=range]{padding:0;min-width:90px;accent-color:#276b9d}button{cursor:pointer;background:#f6f8fa}.views{display:grid;grid-template-columns:1.4fr 1fr;gap:12px}svg{width:100%;height:auto;border:1px solid #dde1e5;border-radius:5px}h2{font-size:16px;font-weight:500;margin:0 0 8px}.note{font-size:13px;color:#58616a;margin:8px 0}.mode-info{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}.blue{color:#276b9d}.orange{color:#b65d24}#time{flex:1}#error{color:#a32525}output{font-variant-numeric:tabular-nums;min-width:45px}#amps label{flex-wrap:wrap}.metric{line-height:1.7} @media(max-width:650px){.views,.mode-info{grid-template-columns:1fr}.row{gap:8px}body{padding:8px}}[hidden]{display:none!important}
+</style><script>(function(){var p=window.location.pathname;if(p.endsWith('/index.html'))window.location.replace((p.slice(0,-10)||'/')+window.location.search+window.location.hash);})();</script></head><body><main>
+<div class="row">
+<label>m₁ (kg)<input id="m1" aria-label="Mass 1" type="number" min="0.1" max="20" step="0.1" value="1"></label>
+<label>m₂ (kg)<input id="m2" aria-label="Mass 2" type="number" min="0.1" max="20" step="0.1" value="1"></label>
+<label>k₁ (N/m)<input id="k1" aria-label="Spring 1" type="number" min="0.1" max="20" step="0.1" value="1"></label>
+<label>k₂ (N/m)<input id="k2" aria-label="Spring 2" type="number" min="0.1" max="20" step="0.1" value="1"></label>
+<label>k₃ (N/m)<input id="k3" aria-label="Spring 3" type="number" min="0.1" max="20" step="0.1" value="1"></label>
+</div>
+<div id="error" role="status"></div>
+<div id="amps">
+<div class="row"><label class="blue"><input id="include1" type="checkbox" checked>Include Mode 1</label><label>Amplitude (m)<input id="amp1" aria-label="Mode 1 amplitude" type="range" min="-0.25" max="0.25" step="0.005" value="0.15"><output id="a1"></output></label></div>
+<div class="row"><label class="orange"><input id="include2" type="checkbox">Include Mode 2</label><label>Amplitude (m)<input id="amp2" aria-label="Mode 2 amplitude" type="range" min="-0.25" max="0.25" step="0.005" value="0.15"><output id="a2"></output></label></div>
+</div>
+<div class="row"><button id="play">Play</button><label for="time">Time (s)</label><input id="time" aria-label="Time" type="range" min="0" max="20" step="0.01" value="0"><output id="clock">0.00</output></div>
+<div class="row"><span>Starting conditions</span><button id="left">Start with only the left mass displaced</button></div>
+<div class="views">
+<section><h2>Two masses and three springs</h2><svg id="system" viewBox="0 0 560 340" role="img" aria-label="Two masses connected to fixed walls by three springs, oscillating horizontally"></svg></section>
+<section><h2>Displacement space</h2><svg id="space" viewBox="0 0 360 340" role="img" aria-label="Current displacement vector and two eigenvector lines in x1 x2 coordinates"></svg></section>
+</div>
+<div class="mode-info"><div id="mode1" class="metric blue"></div><div id="mode2" class="metric orange"></div></div>
+<p class="note">Dashed lines: mode directions. Gray curve: displacement path over 20 s. Black arrow: (x₁, x₂). All motions start at rest; amplitudes multiply the mode vectors shown below.</p>
+<p class="note">Modes solve K u = ω² M u. With unequal masses, the physical mode vectors need not be perpendicular in this plot. Mass sizes are schematic; displacement scale stays fixed during each animation.</p>
+</main><script type="module">
+import {modes,coefficients,displacement} from './model.mjs';
+const $=s=>document.querySelector(s),ids=['m1','m2','k1','k2','k3'];
+let ms,params,t=0,playing=false,last=null,initialLeft=false,valid=true;
+const fmt=x=>Math.abs(x)<1e-8?'0':Number(x.toFixed(3)).toString();
+function c(){return [1,2].map(i=>$('#include'+i).checked?Number($('#amp'+i).value):0)}
+function pause(){playing=false;last=null;$('#play').textContent='Play'}
+function read(){pause();const p=ids.map(id=>Number($('#'+id).value));valid=p.every(x=>Number.isFinite(x)&&x>=.1&&x<=20);$('#error').textContent=valid?'':'Enter masses and spring constants from 0.1 to 20.';$('#play').disabled=!valid;if(!valid)return;params=p;ms=modes(...p);t=0;if(initialLeft)setLeft();render()}
+function setLeft(){const v=coefficients(ms,[.15,0]),limit=Math.max(.25,...v.map(Math.abs));v.forEach((x,i)=>{const el=$('#amp'+(i+1));el.min=-limit;el.max=limit;el.step='any';el.value=x});$('#include1').checked=true;$('#include2').checked=true}
+function line(x1,y1,x2,y2,col='#8b949d',extra=''){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+col+'" '+extra+'/>'}
+function txt(x,y,s,col='#26313b',anchor='middle'){return '<text x="'+x+'" y="'+y+'" fill="'+col+'" text-anchor="'+anchor+'" font-size="14" font-family="system-ui">'+s+'</text>'}
+function spring(a,b,y){let points=a+','+y+' '+(a+9)+','+y;for(let i=0;i<=12;i++)points+=' '+(a+12+(b-a-24)*i/12)+','+(y+(i%2?9:-9));points+=' '+(b-9)+','+y+' '+b+','+y;return '<polyline points="'+points+'" fill="none" stroke="#6f727b" stroke-width="2"/>'}
+function render(){
+if(!valid||!ms)return;
+const cs=c(),x=displacement(ms,cs,t),motionScale=Math.min(150,55/Math.max(.001,Math.abs(cs[0])+Math.abs(cs[1]))),pos=[185+motionScale*x[0],375+motionScale*x[1]],colors=['#276b9d','#b65d24'];
+$('#amp1').disabled=!$('#include1').checked;$('#amp2').disabled=!$('#include2').checked;
+$('#a1').textContent=fmt(Number($('#amp1').value));$('#a2').textContent=fmt(Number($('#amp2').value));$('#clock').textContent=t.toFixed(2);$('#time').value=t;
+let h=line(35,110,35,220,'#444','stroke-width="4"')+line(525,110,525,220,'#444','stroke-width="4"');
+h+=spring(35,pos[0]-23,165)+spring(pos[0]+23,pos[1]-23,165)+spring(pos[1]+23,525,165);
+[185,375].forEach(p=>h+=line(p,95,p,235,'#bbb','stroke-dasharray="4 4"'));
+pos.forEach((p,i)=>{h+='<rect x="'+(p-23)+'" y="139" width="46" height="52" rx="4" fill="'+colors[i]+'"/>'+txt(p,171,'m'+(i+1),'white');h+=txt(i?400:160,270,'x'+(i+1)+' = '+fmt(x[i])+' m')});
+h+=txt((35+pos[0]-23)/2,120,'k₁')+txt((pos[0]+pos[1])/2,120,'k₂')+txt((pos[1]+23+525)/2,120,'k₃')+txt(280,310,'Displacement from dashed equilibrium positions');
+$('#system').innerHTML=h;
+const bound=Math.max(.18,1.2*(Math.abs(cs[0])+Math.abs(cs[1]))),scale=112/bound,ox=174,oy=165;
+const point=v=>[ox+scale*v[0],oy-scale*v[1]];
+let g=line(40,oy,310,oy)+line(ox,292,ox,30)+txt(310,oy+44,'x₁ (m)','#26313b','end')+txt(ox+10,24,'x₂ (m)','#26313b','start');
+[-1,1].forEach(sign=>{g+=txt(ox+sign*112,oy+20,fmt(sign*bound));g+=txt(ox-8,oy-sign*112+4,fmt(sign*bound),'#58616a','end')});
+ms.forEach((m,i)=>{const u=m.u.map(z=>z*bound),a=point(u),b=point(u.map(z=>-z));g+=line(...a,...b,colors[i],'stroke-width="2" stroke-dasharray="6 4"')});
+let path='';for(let i=0;i<=500;i++){const p=point(displacement(ms,cs,i*20/500));path+=(i?'L':'M')+p.join(',')}g+='<path d="'+path+'" fill="none" stroke="#c3c8ce" stroke-width="1.2"/>';
+const tip=point(x);g+=line(ox,oy,...tip,'#222','stroke-width="2"');const ang=Math.atan2(tip[1]-oy,tip[0]-ox);
+if(Math.hypot(...x)>1e-6)g+='<path d="M'+tip.join(',')+'L'+[tip[0]-10*Math.cos(ang-.4),tip[1]-10*Math.sin(ang-.4)].join(',')+'L'+[tip[0]-10*Math.cos(ang+.4),tip[1]-10*Math.sin(ang+.4)].join(',')+'Z" fill="#222"/>';
+g+='<circle cx="'+tip[0]+'" cy="'+tip[1]+'" r="4" fill="#222"/>';$('#space').innerHTML=g;
+ms.forEach((m,i)=>$('#mode'+(i+1)).textContent='Mode '+(i+1)+': ω = '+fmt(m.omega)+' rad/s; f = '+fmt(m.omega/(2*Math.PI))+' Hz.  u = ('+m.u.map(fmt).join(', ')+')');
+}
+ids.forEach(id=>$('#'+id).addEventListener('input',read));
+[1,2].forEach(i=>$('#include'+i).addEventListener('change',()=>{pause();initialLeft=false;t=0;render()}));
+['amp1','amp2'].forEach(id=>$('#'+id).addEventListener('input',()=>{pause();initialLeft=false;t=0;render()}));
+$('#left').addEventListener('click',()=>{if(!valid)return;pause();initialLeft=true;setLeft();t=0;render()});
+$('#time').addEventListener('input',()=>{pause();t=Number($('#time').value);render()});
+$('#play').addEventListener('click',()=>{if(playing){pause();return}if(t>=20)t=0;playing=true;last=null;$('#play').textContent='Pause';requestAnimationFrame(tick)});
+function tick(now){if(!playing)return;if(last!==null)t=Math.min(20,t+Math.min((now-last)/1000,.1));last=now;render();if(t>=20)pause();else requestAnimationFrame(tick)}
+read();
+function fit(){try{const f=window.frameElement;if(!f)return;const h=document.querySelector('main').getBoundingClientRect().height+32;f.style.setProperty('height',h+'px','important');f.style.setProperty('max-height','none','important');f.style.setProperty('aspect-ratio','auto','important');f.parentElement.style.setProperty('height',h+'px','important')}catch{}}
+new ResizeObserver(fit).observe(document.querySelector('main'));window.addEventListener('load',fit);
+</script></body></html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Eigenvector explorer</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:14px;font:15px system-ui,sans-serif;color:#26313b;background:white}main{max-width:950px;margin:auto}.controls,.angle{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.matrix{display:grid;grid-template-columns:75px 75px;gap:5px;border-inline:2px solid #444;padding:8px}.matrix input{width:75px}input,button,select{font:inherit;padding:6px;border:1px solid #bbc4cc;border-radius:4px}label{display:flex;align-items:center;gap:8px}.angle{margin:14px 0}.angle input{flex:1;min-width:100px;accent-color:#246a9c}output{min-width:65px}canvas{display:block;width:100%;height:400px;border:1px solid #ddd;border-radius:6px;touch-action:none}.legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0;font-size:13px}.note{font-size:13px;color:#58616a;margin:8px 0}#status{min-height:42px;margin-top:12px}#error{color:#a32525;font-size:13px;min-height:20px}.blue{color:#246a9c}.orange{color:#bd601d}button{cursor:pointer;background:#f6f8fa}input:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #246a9c}@media(max-width:500px){canvas{height:340px}body{padding:8px}}
+</style><script>(function(){var p=window.location.pathname;if(p.endsWith('/index.html'))window.location.replace((p.slice(0,-10)||'/')+window.location.search+window.location.hash);})();</script></head><body><main>
+<div class="controls"><label>M = <span class="matrix"><input type="number" step="any" value="2" aria-label="Matrix row 1 column 1"><input type="number" step="any" value="1" aria-label="Matrix row 1 column 2"><input type="number" step="any" value="1" aria-label="Matrix row 2 column 1"><input type="number" step="any" value="2" aria-label="Matrix row 2 column 2"></span></label>
+<select id="preset" aria-label="Example matrix"><option value="stretch">Symmetric stretch</option><option value="shear">Shear</option><option value="reflection">Reflection</option><option value="rotation">Rotation</option><option value="collapse">Collapse to a line</option><option value="identity">Identity</option><option value="zero">Zero matrix</option><option value="custom">Custom matrix</option></select></div>
+<div id="rotation-controls" class="angle" style="display:none"><label for="rotation-angle">Rotation angle (clockwise)</label><input id="rotation-angle" aria-label="Rotation matrix angle" type="range" min="0" max="360" step="1" value="45"><output id="rotation-degrees">45°</output></div>
+<div id="error" role="status"></div>
+<div class="angle"><label for="angle">Input vector angle</label><input id="angle" aria-label="Input vector angle" type="range" min="0" max="360" step="0.1" value="20"><output id="degrees">20°</output><button id="play">Play</button></div>
+<label><input id="show" type="checkbox">Show eigenvector directions</label>
+<canvas id="plot" role="img" aria-label="Draggable unit vector v and its transformed vector Mv; angle slider is a keyboard-accessible alternative"></canvas>
+<div class="legend"><span class="blue">Blue: v</span><span class="orange">Orange: Mv</span><span>Dashed line: span of v</span><span>Faint curve: image of the unit circle</span></div>
+<div id="status"></div><div id="spectrum" class="note"></div>
+<p class="note">Drag around the circle, use the angle slider, or press Play. An eigenvector stays on the same line: a negative eigenvalue reverses its direction; a zero eigenvalue maps it to the origin. The viewing scale stays fixed as the vector rotates.</p>
+</main><script>
+// Pure math.
+function apply(m,v){return [m[0]*v[0]+m[1]*v[1],m[2]*v[0]+m[3]*v[1]]}
+function eigen(m){
+ const scale=Math.max(...m.map(Math.abs));if(scale===0)return {all:true,values:[0],dirs:[]};
+ const [a,b,c,d]=m.map(x=>x/scale),disc=(a-d)**2+4*b*c;
+ if(disc<0)return {all:false,values:[],dirs:[]};
+ const root=Math.sqrt(disc),ls=root===0?[(a+d)/2]:[(a+d+root)/2,(a+d-root)/2];
+ if(b===0&&c===0&&a===d)return {all:true,values:[a*scale],dirs:[]};
+ const dirs=ls.map(l=>{const r1=[a-l,b],r2=[c,d-l],r=Math.hypot(...r1)>=Math.hypot(...r2)?r1:r2;const n=Math.hypot(...r);return [-r[1]/n,r[0]/n]});
+ return {all:false,values:ls.map(l=>l*scale),dirs};
+}
+// End pure math.
+const $=s=>document.querySelector(s),inputs=[...document.querySelectorAll('.matrix input')],canvas=$('#plot'),ctx=canvas.getContext('2d'),slider=$('#angle');
+const presets={stretch:[2,1,1,2],shear:[1,1,0,1],reflection:[1,0,0,-1],rotation:[Math.SQRT1_2,Math.SQRT1_2,-Math.SQRT1_2,Math.SQRT1_2],collapse:[1,0,0,0],identity:[1,0,0,1],zero:[0,0,0,0]};
+let m=presets.stretch.slice(),w=0,h=0,scale=1,running=false,last=0,dragging=false;
+const fmt=x=>Math.abs(x)<1e-12?'0':Number(x.toPrecision(5)).toString();
+function screen(v){return [w/2+v[0]*scale,h/2-v[1]*scale]}
+function line(a,b,color,width=1,dash=[]){ctx.beginPath();ctx.setLineDash(dash);ctx.moveTo(...screen(a));ctx.lineTo(...screen(b));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();ctx.setLineDash([])}
+function arrow(v,color,width,label){const q=screen(v),o=screen([0,0]),len=Math.hypot(q[0]-o[0],q[1]-o[1]);if(len<1){ctx.beginPath();ctx.arc(...o,5,0,2*Math.PI);ctx.fillStyle=color;ctx.fill();return}line([0,0],v,color,width);const a=Math.atan2(q[1]-o[1],q[0]-o[0]);ctx.beginPath();ctx.moveTo(...q);ctx.lineTo(q[0]-11*Math.cos(a-.4),q[1]-11*Math.sin(a-.4));ctx.lineTo(q[0]-11*Math.cos(a+.4),q[1]-11*Math.sin(a+.4));ctx.closePath();ctx.fillStyle=color;ctx.fill();ctx.fillText(label,Math.min(w-35,Math.max(5,q[0]+9)),Math.min(h-8,Math.max(15,q[1]-9)))}
+function curve(transform,color){ctx.beginPath();for(let k=0;k<=360;k++){const a=k*Math.PI/180,q=screen(transform([Math.cos(a),Math.sin(a)]));if(k===0)ctx.moveTo(...q);else ctx.lineTo(...q)}ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.stroke()}
+function draw(){
+ const theta=Number(slider.value)*Math.PI/180,v=[Math.cos(theta),Math.sin(theta)],q=apply(m,v),norm=Math.hypot(...q),lambda=v[0]*q[0]+v[1]*q[1],perp=v[0]*q[1]-v[1]*q[0];
+ const magnitude=Math.max(...m.map(Math.abs)),zero=norm<1e-12*Math.max(1,magnitude),aligned=zero||Math.abs(perp)/norm<.009;
+ const extent=Math.max(1,Math.hypot(m[0],m[1]),Math.hypot(m[2],m[3]))*1.2;
+ scale=Math.min(w-70,h-60)/(2*extent);ctx.clearRect(0,0,w,h);ctx.font='13px system-ui';
+ line([-extent,0],[extent,0],'#d0d4d8');line([0,-extent],[0,extent],'#d0d4d8');curve(x=>x,'#a9bfd0');curve(x=>apply(m,x),'#e5b88f');
+ const e=eigen(m);if($('#show').checked){for(const u of e.dirs)line(u.map(x=>-extent*x),u.map(x=>extent*x),'#399263',2,[5,5]);$('#spectrum').textContent=e.all?'Every nonzero vector is an eigenvector; λ = '+fmt(e.values[0])+'.':e.values.length?'Real eigenvalues: '+e.values.map(fmt).join(', ')+(e.dirs.length===1?'. One eigenvector line.':'. Eigenvector lines are green.'):'No real eigenvector directions for this matrix.'}else $('#spectrum').textContent='';
+ line(v.map(x=>-extent*x),v.map(x=>extent*x),aligned?'#399263':'#7d8790',1.5,[6,5]);
+ arrow(q,'#bd601d',5,'Mv');arrow(v,'#246a9c',2.5,'v');
+ const tip=screen(v);ctx.beginPath();ctx.arc(...tip,6,0,2*Math.PI);ctx.fillStyle='#246a9c';ctx.fill();
+ $('#degrees').textContent=Number(slider.value).toFixed(1)+'°';
+ $('#status').textContent=zero?'Mv ≈ 0: near a zero-eigenvalue direction.':aligned?'Nearly aligned: Mv ≈ λv, λ ≈ '+fmt(lambda)+(lambda<0?' (opposite direction).':' (same direction).'):'Not aligned. Component of Mv perpendicular to v: '+fmt(perp)+'.';
+}
+function stop(){running=false;$('#play').textContent='Play'}
+function read(){stop();const next=inputs.map(x=>x.value.trim()===''?NaN:Number(x.value));if(!next.every(Number.isFinite)||!Number.isFinite(Math.hypot(...next)*1.2)){$('#error').textContent='Enter four finite numbers within the numerical plotting range.';return}m=next;$('#error').textContent='';draw()}
+function setRotation(){const deg=Number($('#rotation-angle').value),angle=deg*Math.PI/180;const clean=x=>Math.abs(x)<1e-12?0:x,c=clean(Math.cos(angle)),s=clean(Math.sin(angle));[c,s,-s,c].forEach((x,i)=>inputs[i].value=x);$('#rotation-degrees').textContent=deg+'°';read()}
+$('#rotation-angle').addEventListener('input',setRotation);
+inputs.forEach(x=>x.addEventListener('input',()=>{$('#preset').value='custom';$('#rotation-controls').style.display='none';read()}));
+$('#preset').addEventListener('change',()=>{const rotation=$('#preset').value==='rotation';$('#rotation-controls').style.display=rotation?'flex':'none';if(rotation){setRotation();return}const p=presets[$('#preset').value];if(p){inputs.forEach((x,i)=>x.value=p[i]);read()}});
+slider.addEventListener('input',()=>{stop();draw()});$('#show').addEventListener('change',draw);
+function animate(now){if(!running)return;if(last)slider.value=(Number(slider.value)+(now-last)*.025)%360;last=now;draw();requestAnimationFrame(animate)}
+$('#play').addEventListener('click',()=>{if(running){stop();return}running=true;last=0;$('#play').textContent='Pause';requestAnimationFrame(animate)});
+function drag(event){const r=canvas.getBoundingClientRect(),x=event.clientX-r.left-w/2,y=h/2-(event.clientY-r.top);if(Math.hypot(x,y)<3)return;slider.value=(Math.atan2(y,x)*180/Math.PI+360)%360;draw()}
+canvas.addEventListener('pointerdown',e=>{stop();dragging=true;canvas.setPointerCapture(e.pointerId);drag(e)});canvas.addEventListener('pointermove',e=>{if(dragging)drag(e)});canvas.addEventListener('pointerup',()=>dragging=false);canvas.addEventListener('pointercancel',()=>dragging=false);
+new ResizeObserver(()=>{w=canvas.clientWidth;h=canvas.clientHeight;const dpr=devicePixelRatio||1;canvas.width=w*dpr;canvas.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);draw()}).observe(canvas);
+function fit(){const frame=window.frameElement;if(!frame)return;const s=getComputedStyle(document.body),height=Math.ceil(document.querySelector('main').getBoundingClientRect().height+parseFloat(s.paddingTop)+parseFloat(s.paddingBottom)+4);frame.style.setProperty('height',height+'px','important');frame.style.setProperty('max-height','none','important');frame.style.setProperty('aspect-ratio','auto','important');frame.setAttribute('height',height)}
+new ResizeObserver(fit).observe(document.querySelector('main'));window.addEventListener('load',fit);
+</script></body></html>
