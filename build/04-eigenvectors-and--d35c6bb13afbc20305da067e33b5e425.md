@@ -125,7 +125,7 @@ For $\mathbf B$, solve the eigenvector equation:
 
 This requires $y=0$. Every eigenvector is a nonzero multiple of $(1,0)^T$, so there is only one independent eigenvector. Thus the same repeated root gives two independent eigenvectors for $\mathbf A$, but only one for $\mathbf B$.
 
-The practical rule is simple: distinct eigenvalues guarantee independent eigenvectors; repeated eigenvalues must be checked by solving $(\mathbf M-\lambda\mathbf I)\mathbf v=\mathbf 0$. We will see how an eigenvector basis diagonalizes a matrix in [Similarity Transformations and Diagonalization](04b-similarity-transformations.md).
+The practical rule is simple: distinct eigenvalues guarantee independent eigenvectors; repeated eigenvalues must be checked by solving $(\mathbf M-\lambda\mathbf I)\mathbf v=\mathbf 0$. We will see how an eigenvector basis diagonalizes a matrix in [Similarity Transformations and Diagonalization](04b-similarity-transformations-and-diagonalization.md).
 
 ## Homework
 

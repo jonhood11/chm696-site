@@ -97,7 +97,7 @@ The final result is diagonal because each eigenvector component evolves independ
 \end{pmatrix}.
 ```
 
-Can we do this for every matrix? Not always. We need enough linearly independent eigenvectors to form a basis. Recall the [two repeated-eigenvalue examples](04-eigenvalues-and-eigenvectors.md#eigenvector-basis): the identity matrix had a full eigenvector basis, while the shear matrix had only one independent eigenvector. Repeated roots alone do not decide whether diagonalization is possible.
+Can we do this for every matrix? Not always. We need enough linearly independent eigenvectors to form a basis. Recall the [two repeated-eigenvalue examples](04-eigenvectors-and-eigenvalues.md#eigenvector-basis): the identity matrix had a full eigenvector basis, while the shear matrix had only one independent eigenvector. Repeated roots alone do not decide whether diagonalization is possible.
 
 For a $2\times2$ matrix with two distinct eigenvalues, the condition is automatically satisfied because the two eigenvectors are linearly independent. For an $n\times n$ matrix, $n$ distinct eigenvalues are sufficient. They are not necessary: a repeated eigenvalue may still have enough independent eigenvectors.
 
