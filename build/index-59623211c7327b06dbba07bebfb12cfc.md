@@ -1,0 +1,34 @@
+# CHM 696
+
+**Jonathan Hood**
+
+Purdue University
+
+Welcome to the CHM 696 Mathematical Methods course website for Fall 2026.
+
+This site contains the course resources that have been released to students.
+
+## Lectures
+
+1. [Series and Limits](lectures/01-series-and-limits.md)
+2. [Complex Numbers](lectures/02-complex-numbers.md)
+3. [Linear Algebra: Vectors and Transformations](lectures/03-linear-algebra-vectors-and-transformations.md)
+4. [Projections and Gram–Schmidt](lectures/03a-projections-and-gram-schmidt.md)
+5. [Eigenvectors and Eigenvalues](lectures/04-eigenvectors-and-eigenvalues.md)
+6. [Normal Modes](lectures/04a-normal-modes.md)
+7. [Similarity Transformations and Diagonalization](lectures/04b-similarity-transformations-and-diagonalization.md)
+8. [Complex Vector Spaces, Hermitian and Unitary Matrices](lectures/05-complex-vector-spaces-hermitian-and-unitary-matrices.md)
+9. [The Spectral Theorem and Spectral Decomposition](lectures/05a-the-spectral-theorem-and-spectral-decomposition.md)
+10. [Group Theory and Continuous Transformations](lectures/05b-group-theory-and-continuous-transformations.md)
+
+:::{note}
+Lecture notes, assignments, projects, and computational notebooks will appear
+here as they are released. Use Brightspace for course announcements and due
+dates, and Gradescope for submitting work and reviewing feedback.
+:::
+
+:::{card} Resources
+:link: resources/index.md
+
+Access currently released course resources.
+:::

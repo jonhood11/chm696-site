@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1210" height="430" viewBox="0 0 1210 430" role="img" aria-labelledby="title desc">
+  <title id="title">Three continuous symmetries and their conserved quantities</title>
+  <desc id="desc">Three panels show the same experiment shifted to a later time, moved to another location, and rotated. When the dynamics are unchanged, the corresponding conserved quantities are energy, linear momentum, and angular momentum.</desc>
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#2d6e9d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#257f78" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#b86a36" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #24313a; }
+      .heading { font-size: 24px; font-weight: 700; }
+      .sub { font-size: 15px; fill: #52616d; }
+      .small { font-size: 14px; fill: #52616d; }
+      .quantity { font-size: 21px; font-weight: 700; }
+      .quantity.time { fill: #2d6e9d; }
+      .quantity.space { fill: #257f78; }
+      .quantity.rotation { fill: #b86a36; }
+      .card { fill: #ffffff; stroke: #d9e1e6; stroke-width: 2; }
+      .muted { stroke: #aebcc5; stroke-width: 2; fill: none; }
+    </style>
+  </defs>
+
+  <rect width="1210" height="430" fill="#ffffff"/>
+  <rect class="card" x="16" y="18" width="380" height="392" rx="15"/>
+  <rect class="card" x="415" y="18" width="380" height="392" rx="15"/>
+  <rect class="card" x="814" y="18" width="380" height="392" rx="15"/>
+  <path d="M16 101 H396" stroke="#d9e7f1" stroke-width="2"/>
+  <path d="M415 101 H795" stroke="#d9eae6" stroke-width="2"/>
+  <path d="M814 101 H1194" stroke="#f0e3d7" stroke-width="2"/>
+
+  <!-- Time translation: repeat the same moving-particle experiment later. -->
+  <text class="heading" x="40" y="54">Time translation</text>
+  <text class="sub" x="40" y="80">Run the same experiment later</text>
+  <circle cx="103" cy="164" r="32" fill="#eef5fa" stroke="#2d6e9d" stroke-width="2.5"/>
+  <path d="M103 164 V145 M103 164 L117 172" fill="none" stroke="#2d6e9d" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="103" cy="164" r="3.5" fill="#2d6e9d"/>
+  <circle cx="309" cy="164" r="32" fill="#eef5fa" stroke="#2d6e9d" stroke-width="2.5"/>
+  <path d="M309 164 L319 149 M309 164 V183" fill="none" stroke="#2d6e9d" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="309" cy="164" r="3.5" fill="#2d6e9d"/>
+  <path d="M160 164 H246" stroke="#2d6e9d" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text class="small" x="205" y="150" text-anchor="middle">Δt</text>
+  <path d="M58 257 H148 M264 257 H354" class="muted"/>
+  <circle cx="83" cy="245" r="11" fill="#2d6e9d"/>
+  <circle cx="289" cy="245" r="11" fill="#2d6e9d"/>
+  <path d="M102 245 H130" stroke="#2d6e9d" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <path d="M308 245 H336" stroke="#2d6e9d" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text class="small" x="103" y="287" text-anchor="middle">start at t</text>
+  <text class="small" x="309" y="287" text-anchor="middle">start at t + Δt</text>
+  <path d="M40 315 H372" stroke="#e2e7eb"/>
+  <text class="small" x="40" y="341">Dynamics unchanged → conserved:</text>
+  <text class="quantity time" x="40" y="377">Energy E</text>
+
+  <!-- Spatial translation: the same free-particle experiment is displaced. -->
+  <text class="heading" x="439" y="54">Spatial translation</text>
+  <text class="sub" x="439" y="80">Move the experiment by a</text>
+  <path d="M455 255 H755" class="muted"/>
+  <path d="M507 155 V260 M699 155 V260" stroke="#d5e5e1" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <path d="M522 165 H680" stroke="#257f78" stroke-width="2.5" marker-start="url(#arrow-teal)" marker-end="url(#arrow-teal)"/>
+  <text class="small" x="601" y="151" text-anchor="middle">a</text>
+  <circle cx="507" cy="243" r="13" fill="#257f78"/>
+  <circle cx="699" cy="243" r="13" fill="#257f78"/>
+  <path d="M531 243 H566" stroke="#257f78" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+  <path d="M723 243 H758" stroke="#257f78" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+  <text class="small" x="507" y="287" text-anchor="middle">at x</text>
+  <text class="small" x="699" y="287" text-anchor="middle">at x + a</text>
+  <path d="M439 315 H771" stroke="#e2e7eb"/>
+  <text class="small" x="439" y="341">Dynamics unchanged → conserved:</text>
+  <text class="quantity space" x="439" y="377">Momentum p</text>
+
+  <!-- Rotation: rotate a vector around the center of a symmetric setup. -->
+  <text class="heading" x="838" y="54">Rotation</text>
+  <text class="sub" x="838" y="80">Rotate the experiment by θ</text>
+  <circle cx="903" cy="217" r="51" fill="#fffaf6" stroke="#e8cdb9" stroke-width="2"/>
+  <circle cx="1105" cy="217" r="51" fill="#fffaf6" stroke="#e8cdb9" stroke-width="2"/>
+  <circle cx="903" cy="217" r="6" fill="#b86a36"/>
+  <circle cx="1105" cy="217" r="6" fill="#b86a36"/>
+  <path d="M903 217 L946 217" stroke="#b86a36" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <path d="M1105 217 L1130 181" stroke="#b86a36" stroke-width="3" marker-end="url(#arrow-orange)"/>
+  <path d="M970 217 H1038" stroke="#b86a36" stroke-width="2.5" marker-end="url(#arrow-orange)"/>
+  <text class="small" x="1003" y="202" text-anchor="middle">θ</text>
+  <text class="small" x="903" y="287" text-anchor="middle">original orientation</text>
+  <text class="small" x="1105" y="287" text-anchor="middle">rotated orientation</text>
+  <path d="M838 315 H1170" stroke="#e2e7eb"/>
+  <text class="small" x="838" y="341">Dynamics unchanged → conserved:</text>
+  <text class="quantity rotation" x="838" y="377">Angular momentum J</text>
+</svg>

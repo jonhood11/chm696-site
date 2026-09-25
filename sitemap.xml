@@ -32,6 +32,9 @@
     <loc>http://localhost:3000/lectures/a-the-spectral-theorem-and-spectral-decomposition</loc>
   </url>
   <url>
+    <loc>http://localhost:3000/lectures/b-group-theory-and-continuous-transformations</loc>
+  </url>
+  <url>
     <loc>http://localhost:3000/resources</loc>
   </url>
   <url>
