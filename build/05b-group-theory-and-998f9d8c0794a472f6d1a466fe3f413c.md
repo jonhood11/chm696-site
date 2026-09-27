@@ -600,27 +600,3 @@ For example, a peak initially centered at $x=0$ moves to $x=a$. The derivative o
 7. The plane wave $\psi_k(x,0)=e^{ikx}$ is an idealized momentum eigenstate. Find its energy, then use the time-dependent Schrödinger equation to find $\psi_k(x,t)$. Explain in what sense this momentum eigenstate is preserved as time passes. (A plane wave is not normalizable on the whole real line.)
 
 ::::
-
-::::{admonition} Question 5: A change of reference frame in spacetime
-
-Let's use a continuous transformation to change reference frames. An event is something that happens at one time and place. Two observers moving at constant velocity relative to one another use different inertial frames and can assign different coordinates $(t,x)$ and $(t',x')$ to the same event. A Lorentz boost relates those coordinates; it does not move the event or describe time evolution.
-
-Let the primed frame move at velocity $v$ along the positive $x$ direction relative to the unprimed frame, with $|v|<c$, where $c$ is the speed of light. Their origins coincide at $t=t'=0$ and $x=x'=0$. Write $X=(ct,x)^T$ and $X'=(ct',x')^T$, so each entry has units of length. The boost is $X'=\Lambda(\eta)X$. Its parameter $\eta$, called rapidity, satisfies $\tanh\eta=v/c$. Take this matrix as given:
-
-```{math}
-\Lambda(\eta)=
-\begin{pmatrix}
-\cosh\eta&-\sinh\eta\\
--\sinh\eta&\cosh\eta
-\end{pmatrix}.
-```
-
-If the hyperbolic functions are new to you, $\cosh\eta=(e^\eta+e^{-\eta})/2$ and $\sinh\eta=(e^\eta-e^{-\eta})/2$. You may use $\cosh^2\eta-\sinh^2\eta=1$.
-
-1. Multiply out $X'=\Lambda(\eta)X$ to find $ct'$ and $x'$. Then use $\tanh\eta=v/c$ and $\cosh^2\eta-\sinh^2\eta=1$ to show that $\cosh\eta=\gamma$ and $\sinh\eta=\gamma v/c$, where $\gamma=1/\sqrt{1-v^2/c^2}$. Write your coordinate transformation in terms of $v$ and $\gamma$.
-2. The moving observer stays at $x'=0$. Set $x'=0$ in your result from part 1 and show that this observer's position in the unprimed frame is $x=vt$.
-3. Find the generator $G=\left.d\Lambda/d\eta\right|_{\eta=0}$ and check that $G^2=I$. Separate the even and odd powers in $e^{\eta G}$ to recover $\Lambda(\eta)$. For a small $d\eta$, use $X'\approx(I+d\eta\,G)X$ to write the changes in $ct$ and $x$.
-4. Substitute your formulas for $ct'$ and $x'$ to show that $c^2t'^2-x'^2=c^2t^2-x^2$. This quantity is the squared spacetime interval from the common origin to the event. The individual coordinates change; what stays the same?
-5. Use the exponential form to show that two boosts along $x$ compose as $\Lambda(\eta_2)\Lambda(\eta_1)=\Lambda(\eta_1+\eta_2)$. Which parameter adds, much as angles add for rotations about the same axis?
-
-::::
